@@ -18,3 +18,22 @@ class User(models.Model):
   def __unicode__(self):
     return self.username
 
+class Event(models.Model):
+  CATEGORY_CHOICES = (("Sports","Sports"),("Party","Party"))
+  
+  title = models.CharField(max_length=100)
+  description = models.CharField(max_length=2000)
+  photo = models.ImageField(upload_to='event_photos',null=True, blank=True)
+  start_time = models.DateTimeField()
+  end_time = models.DateTimeField()
+  place_text = models.CharField(max_length=200)
+  place_longitude = models.FloatField()
+  place_latitude = models.FloatField()
+  category = models.CharField(max_length=20,choices=CATEGORY_CHOICES)
+  owner=models.ForeignKey("User")
+  
+  def __unicode__(self):
+    return self.title
+    
+class Attendence(models.Model):
+  PARTICIPATION_CHOICES = (("Going","Going"),("Maybe Going","Maybe Going",("Not Going","Not Going")))
