@@ -28,10 +28,20 @@ class Event(models.Model):
   place_longitude = models.FloatField()
   place_latitude = models.FloatField()
   category = models.CharField(max_length=20,choices=CATEGORY_CHOICES)
-  owner=models.ForeignKey("User")
+  owner=models.ForeignKey("UserProfile")
   
   def __unicode__(self):
     return self.title
     
 class Attendence(models.Model):
-  PARTICIPATION_CHOICES = (("Going","Going"),("Maybe Going","Maybe Going",("Not Going","Not Going")))
+  PARTICIPATION_CHOICES = (("Going","Going"),("Maybe Going","Maybe Going"),("Not Going","Not Going"))
+  
+  participant = models.ForeignKey("UserProfile")
+  event = models.ForeignKey("Event")
+  participation = models.CharField(max_length=15, choices=PARTICIPATION_CHOICES)
+  isInvited = models.BooleanField()
+  
+  def __unicode__(self):
+    return self.event.title+"attendence"
+
+   
