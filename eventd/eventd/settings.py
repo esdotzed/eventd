@@ -4,6 +4,8 @@ import os
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__name__))
 
+AUTH_PROFILE_MODULE = 'eventdapp.UserProfile'
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

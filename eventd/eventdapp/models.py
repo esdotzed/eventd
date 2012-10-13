@@ -1,20 +1,18 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class User(models.Model):
+class UserProfile(models.Model):
   GENDERS = (("M","M"), ("F","F"))
 
-  username = models.CharField(max_length=45, unique=True)
-  email = models.CharField(max_length=60, unique=True)
-  password = models.CharField(max_length=45)
   phone_number = models.CharField(max_length=20, blank=True)
   location = models.CharField(max_length=100, blank=True)
   dob = models.DateField(null=True, blank=True)
-  gender = models.CharField(max_length=8, blank=True)
+  gender = models.CharField(max_length=8, blank=True, choices=GENDERS)
   photo = models.ImageField(upload_to='user_photos', null=True, blank=True)
-  first_name = models.CharField(max_length=45, blank=True)
-  last_name = models.CharField(max_length=45, blank=True)
   friends = models.ManyToManyField('self', null=True, blank=True)
 
+  user = models.ForeignKey(User, unique=True, related_name='profile')
+
   def __unicode__(self):
-    return self.username
+    return self.user.username
 
