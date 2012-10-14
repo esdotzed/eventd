@@ -1,20 +1,18 @@
-<html>
-<head>
-<title>Log-in</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<form action="" method="post">
-  {% csrf_token %}
-  <label for="username">Username:</label>
-  <input type="text" name="username" value="" id="username" /><br />
-  <label for="password">Password:</label>
-  <input type="password" name="password" value="" id="password" /><br />
+{% block title %}Log-in{% endblock %}
 
-  <input type="submit" value="Login" />
-  <input type="hidden" name="next" value="/test/" />
-  <a href="/register/">Register</a>
-</form>
+{% block content %}
+  <form action="" method="post">
+    {% csrf_token %}
+    <label for="username">Username:</label>
+    <input type="text" name="username" value="" id="username" /><br />
+    <label for="password">Password:</label>
+    <input type="password" name="password" value="" id="password" /><br />
 
-</body>
-</html>
+    <input type="submit" value="Login" />
+    <input type="hidden" name="next" value="/test/" />
+    <a href="/register/">Register</a>
+  </form>
+{% endblock %}
+
