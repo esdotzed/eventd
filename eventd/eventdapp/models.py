@@ -25,10 +25,10 @@ class Event(models.Model):
   start_time = models.DateTimeField()
   end_time = models.DateTimeField()
   place_text = models.CharField(max_length=200)
-  place_longitude = models.FloatField()
-  place_latitude = models.FloatField()
+  place_longitude = models.FloatField(null=True, blank=True)
+  place_latitude = models.FloatField(null=True, blank=True)
   category = models.CharField(max_length=20,choices=CATEGORY_CHOICES)
-  owner=models.ForeignKey("UserProfile")
+  owner=models.ForeignKey("UserProfile", blank=True)
   
   def __unicode__(self):
     return self.title

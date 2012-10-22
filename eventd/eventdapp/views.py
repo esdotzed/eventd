@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.forms import ModelForm
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render, render_to_response
 from django.template import RequestContext
+from eventdapp.models import Event
 from eventdapp.models import UserProfile
 
 class CustomUserCreationForm(UserCreationForm):
@@ -38,6 +40,23 @@ class CustomUserCreationForm(UserCreationForm):
       user_profile.save()
     return user
 
+class EventForm(ModelForm):
+  class Meta:
+    model = Event
+    exclude = ('owner',)
+
+  def __init__(self, *args, **kwargs):
+    self.request = kwargs.pop("request")
+    super(ModelForm, self).__init__(*args, **kwargs)
+
+  def save(self, commit=True):
+    event = super(ModelForm, self).save(commit=False)
+    event.owner = self.request.user.get_profile()
+
+    if commit:
+      event.save()
+    return event
+
 def homepage(request):
   if not request.user.is_authenticated():
     return HttpResponseRedirect("/login/")
@@ -55,4 +74,19 @@ def register(request):
   return render_to_response("eventdapp/register.html", {
     'form': form,
   }, context_instance=RequestContext(request))
+
+def create_event(request):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect("/login/")
+  if request.method == 'POST':
+    form = EventForm(request.POST, request.FILES, request=request)
+    if form.is_valid():
+      new_event = form.save()
+      return HttpResponseRedirect("/")
+  else:
+    form = EventForm(request=request)
+
+  return render(request, 'eventdapp/event_form.html', {
+    'form': form,
+  })
 
