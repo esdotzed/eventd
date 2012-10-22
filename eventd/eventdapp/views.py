@@ -61,7 +61,11 @@ def homepage(request):
   if not request.user.is_authenticated():
     return HttpResponseRedirect("/login/")
   username = request.user.username
-  return render_to_response('eventdapp/homepage.html', {'username':username})
+  own_events = Event.objects.filter(owner=request.user.get_profile())
+  return render_to_response('eventdapp/homepage.html', {
+    'username':username,
+    'events':own_events,
+  })
 
 def register(request):
   if request.method == 'POST':
@@ -75,6 +79,12 @@ def register(request):
     'form': form,
   }, context_instance=RequestContext(request))
 
+def view_event(request, event_id):
+  event = Event.objects.get(pk=event_id)
+  return render(request, 'eventdapp/event.html', {
+    'event': event,
+  })
+
 def create_event(request):
   if not request.user.is_authenticated():
     return HttpResponseRedirect("/login/")
@@ -85,6 +95,29 @@ def create_event(request):
       return HttpResponseRedirect("/")
   else:
     form = EventForm(request=request)
+
+  return render(request, 'eventdapp/event_form.html', {
+    'form': form,
+  })
+
+def delete_event(request, event_id):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect("/login/")
+  event = Event.objects.get(pk=event_id)
+  event.delete()
+  return HttpResponseRedirect("/")
+
+def edit_event(request, event_id):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect("/login/")
+  event = Event.objects.get(pk=event_id)
+  if request.method == 'POST':
+    form = EventForm(request.POST, request.FILES, request=request, instance=event)
+    if form.is_valid():
+      new_event = form.save()
+      return HttpResponseRedirect("../../{}".format(new_event.id))
+  else:
+    form = EventForm(request=request, instance=event)
 
   return render(request, 'eventdapp/event_form.html', {
     'form': form,

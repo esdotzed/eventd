@@ -10,5 +10,8 @@ urlpatterns = patterns('',
     url(r'login/$', login, {'template_name': 'eventdapp/login.html'}),
     url(r'logout/$', logout, {'next_page': '..'}),
     url(r'register/$', 'eventdapp.views.register'),
+    url(r'event/(?P<event_id>\d+)/$', 'eventdapp.views.view_event'),
     url(r'event/create/$', 'eventdapp.views.create_event'),
+    url(r'event/delete/(?P<event_id>\d+)/$', 'eventdapp.views.delete_event'),
+    url(r'event/edit/(?P<event_id>\d+)/$', 'eventdapp.views.edit_event'),
 )

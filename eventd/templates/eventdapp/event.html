@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Event View{% endblock %}
+
+{% block content %}
+  <div><p>{{ event.title }}</p></div>
+  <div><p>{{ event.description }}</p></div>
+  <div><p>{{ event.place_text }}</p></div>
+  <div><p>{{ event.category }}</p></div>
+  <div><p>Created by: {{ event.owner.user.username }}</p></div>
+
+  <div><a href="../delete/{{ event.id }}/">Delete<a></div>
+  <div><a href="../edit/{{ event.id }}/">Edit<a></div>
+{% endblock %}
+
