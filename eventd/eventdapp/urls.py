@@ -6,7 +6,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'eventdapp.views.homepage'),
+    url(r'^$', 'eventdapp.views.view_own_homepage'),
     url(r'login/$', login, {'template_name': 'eventdapp/login.html'}),
     url(r'logout/$', logout, {'next_page': '..'}),
     url(r'register/$', 'eventdapp.views.register'),

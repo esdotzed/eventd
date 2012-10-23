@@ -3,7 +3,13 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
- {{ username }}'s homepage~
+  {% if is_own %}
+    <div><a href="/logout/">Log out</a></div>
+    <br />
+    <div><a href="/event/create/">Create Event</a></div>
+    <br />
+  {% endif %}
+  {{ username }}'s homepage~
   <div>
     <ul>
     {% for event in events %}

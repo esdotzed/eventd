@@ -57,16 +57,6 @@ class EventForm(ModelForm):
       event.save()
     return event
 
-def homepage(request):
-  if not request.user.is_authenticated():
-    return HttpResponseRedirect("/login/")
-  username = request.user.username
-  own_events = Event.objects.filter(owner=request.user.get_profile())
-  return render_to_response('eventdapp/homepage.html', {
-    'username':username,
-    'events':own_events,
-  })
-
 def register(request):
   if request.method == 'POST':
     form = CustomUserCreationForm(request.POST, request.FILES)
@@ -86,19 +76,7 @@ def view_event(request, event_id):
   })
 
 def create_event(request):
-  if not request.user.is_authenticated():
-    return HttpResponseRedirect("/login/")
-  if request.method == 'POST':
-    form = EventForm(request.POST, request.FILES, request=request)
-    if form.is_valid():
-      new_event = form.save()
-      return HttpResponseRedirect("/")
-  else:
-    form = EventForm(request=request)
-
-  return render(request, 'eventdapp/event_form.html', {
-    'form': form,
-  })
+  return display_event_form(request, redirect="/")
 
 def delete_event(request, event_id):
   if not request.user.is_authenticated():
@@ -108,33 +86,37 @@ def delete_event(request, event_id):
   return HttpResponseRedirect("/")
 
 def edit_event(request, event_id):
+  event = Event.objects.get(pk=event_id)
+  return display_event_form(request, redirect="../../{}".format(event.id), instance=event)
+
+def display_event_form(request, **kwargs):
   if not request.user.is_authenticated():
     return HttpResponseRedirect("/login/")
-  event = Event.objects.get(pk=event_id)
+  redirect_addr = kwargs.pop("redirect")
   if request.method == 'POST':
-    form = EventForm(request.POST, request.FILES, request=request, instance=event)
+    form = EventForm(request.POST, request.FILES, request=request, **kwargs)
     if form.is_valid():
       new_event = form.save()
-      return HttpResponseRedirect("../../{}".format(new_event.id))
+      return HttpResponseRedirect(redirect_addr)
   else:
-    form = EventForm(request=request, instance=event)
+    form = EventForm(request=request, **kwargs)
 
   return render(request, 'eventdapp/event_form.html', {
     'form': form,
   })
 
+def view_own_homepage(request):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect("/login/")
+  return view_user(request, request.user.id)
+
 def view_user(request, user_id):
-  if request.user.is_authenticated():
-    username = request.user.username
-    own_events = Event.objects.filter(owner=request.user.get_profile())
-    return render_to_response('eventdapp/homepage.html', {
-      'username':username,
-      'events':own_events,
-    })
   user = User.objects.get(pk=user_id)
   username = user.username
-  own_events = Event.objects.filter(owner=user.get_profile())
+  events = Event.objects.filter(owner=user.get_profile())
   return render(request, 'eventdapp/user.html', {
     'username': username,
-    'events': own_events,
+    'events': events,
+    'is_own': (request.user.id == int(user_id)),
   })  
+
