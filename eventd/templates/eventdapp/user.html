@@ -3,11 +3,7 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
-  Hi,{{ username }}!
-  <div><a href="/logout/">Log out</a></div>
-  <br />
-  <div><a href="/event/create/">Create Event</a></div>
-  <br />
+ {{ username }}'s homepage~
   <div>
     <ul>
     {% for event in events %}
@@ -16,4 +12,3 @@
     </ul>
   </div>
 {% endblock %}
-

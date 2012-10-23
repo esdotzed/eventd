@@ -123,3 +123,18 @@ def edit_event(request, event_id):
     'form': form,
   })
 
+def view_user(request, user_id):
+  if request.user.is_authenticated():
+    username = request.user.username
+    own_events = Event.objects.filter(owner=request.user.get_profile())
+    return render_to_response('eventdapp/homepage.html', {
+      'username':username,
+      'events':own_events,
+    })
+  user = User.objects.get(pk=user_id)
+  username = user.username
+  own_events = Event.objects.filter(owner=user.get_profile())
+  return render(request, 'eventdapp/user.html', {
+    'username': username,
+    'events': own_events,
+  })  
