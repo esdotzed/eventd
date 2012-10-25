@@ -14,5 +14,8 @@ urlpatterns = patterns('',
     url(r'event/create/$', 'eventdapp.views.create_event'),
     url(r'event/delete/(?P<event_id>\d+)/$', 'eventdapp.views.delete_event'),
     url(r'event/edit/(?P<event_id>\d+)/$', 'eventdapp.views.edit_event'),
+    url(r'event/attend/(?P<event_id>\d+)/$', 'eventdapp.views.attend_event'),
+    url(r'event/maybeattend/(?P<event_id>\d+)/$', 'eventdapp.views.maybeattend_event'),
+    url(r'event/notattend/(?P<event_id>\d+)/$', 'eventdapp.views.notattend_event'),
     url(r'user/(?P<user_id>\d+)/$','eventdapp.views.view_user'),
 )

@@ -7,6 +7,7 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from eventdapp.models import Event
 from eventdapp.models import UserProfile
+from eventdapp.models import Attendence
 
 class CustomUserCreationForm(UserCreationForm):
   GENDERS = (('',''), ("M","M"), ("F","F"))
@@ -72,10 +73,33 @@ def register(request):
 def view_event(request, event_id):
   event = Event.objects.get(pk=event_id)
   owner_id = event.owner.user.id
+  
+  #determine whether the user has activated the participation status
+  attendence = Attendence.objects.filter(event__pk = event.id, participant__pk = request.user.id)
+  
+  if attendence.exists():
+    status = attendence[0].participation
+    if status == "Going":
+      attendence_choice1 = "Maybe Going"
+      url_choice1 = "maybeattend"
+      attendence_choice2 = "Not Going"
+      url_choice2 = "notattend"
+    elif status == "Maybe Going":
+      attendence_choice1 = "Going"
+      url_choice1 = "attend"
+      attendence_choice2 = "Not Going"
+      url_choice2 = "notattend"
+    elif status == "Not Going":
+      attendence_choice1 = "Going"
+      url_choice1 = "attend"
+      attendence_choice2 = "Maybe Going"
+      url_choice2 = "maybeattend"
   return render(request, 'eventdapp/event.html', {
     'event': event,
     'is_own':(request.user.id == owner_id),
-  })
+    'is_activated': (attendence.exists()),
+    'is_not_activated': (attendence.exists()==False),
+    })
 
 def create_event(request):
   return display_event_form(request, redirect="/")
@@ -138,3 +162,9 @@ def view_user(request, user_id):
     'is_own': (request.user.id == int(user_id)),
   })  
 
+#three participation views: attend, maybe attend, not attend
+#def attend_event(request, event_id):
+
+#def maybeattend_event(request, event_id):
+
+# notattend_event(request, event_id):

@@ -13,5 +13,14 @@
     <div><a href="../delete/{{ event.id }}/">Delete<a></div>
     <div><a href="../edit/{{ event.id }}/">Edit<a></div>
   {% endif %}
+  
+  {% if is_not_activated %}
+    <div><a href="../attend/{{ event.id }}/">Join<a></div>
+    <div><a href="../maybeattend/{{ event.id }}/">Maybe<a></div>
+  {% else %}{% if is_activated %}
+    <div>{{status}}</div>
+    <div><a href="../{{url_choice1}}/{{ event.id }}/">{{attendence_choice1}}<a></div>
+    <div><a href="../{{url_choice2}}/{{ event.id }}/">{{attendence_choice2}}<a></div>
+  {% endif %}{% endif %}
 {% endblock %}
 
