@@ -71,8 +71,10 @@ def register(request):
 
 def view_event(request, event_id):
   event = Event.objects.get(pk=event_id)
+  owner_id = event.owner.user.id
   return render(request, 'eventdapp/event.html', {
     'event': event,
+    'is_own':(request.user.id == owner_id),
   })
 
 def create_event(request):
@@ -81,14 +83,30 @@ def create_event(request):
 def delete_event(request, event_id):
   if not request.user.is_authenticated():
     return HttpResponseRedirect("/login/")
+  user_id = request.user.id 
   event = Event.objects.get(pk=event_id)
-  event.delete()
-  return HttpResponseRedirect("/")
-
+  owner_id = event.owner.user.id
+  if user_id == owner_id:
+    event.delete()
+    return HttpResponseRedirect("/")
+  else:
+    return render(request, 'eventdapp/nopermit.html',{
+      'type' : "delete",
+    })
+  
 def edit_event(request, event_id):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect("/login/")
+  user_id = request.user.id 
   event = Event.objects.get(pk=event_id)
-  return display_event_form(request, redirect="../../{}".format(event.id), instance=event)
-
+  owner_id = event.owner.user.id
+  if user_id == owner_id:
+    return display_event_form(request, redirect="../../{}".format(event.id), instance=event)
+  else:
+    return render(request, 'eventdapp/nopermit.html',{
+      'type' : "edit",
+    })
+    
 def display_event_form(request, **kwargs):
   if not request.user.is_authenticated():
     return HttpResponseRedirect("/login/")

@@ -8,8 +8,10 @@
   <div><p>{{ event.place_text }}</p></div>
   <div><p>{{ event.category }}</p></div>
   <div><p>Created by: {{ event.owner.user.username }}</p></div>
-
-  <div><a href="../delete/{{ event.id }}/">Delete<a></div>
-  <div><a href="../edit/{{ event.id }}/">Edit<a></div>
+  
+  {% if is_own %}
+    <div><a href="../delete/{{ event.id }}/">Delete<a></div>
+    <div><a href="../edit/{{ event.id }}/">Edit<a></div>
+  {% endif %}
 {% endblock %}
 
