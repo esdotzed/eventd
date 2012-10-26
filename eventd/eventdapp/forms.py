@@ -41,6 +41,8 @@ class EventForm(ModelForm):
   class Meta:
     model = Event
     exclude = ('owner',)
+    widgets = {'place_longitude': forms.HiddenInput(),
+               'place_latitude': forms.HiddenInput()}
 
   def __init__(self, *args, **kwargs):
     self.request = kwargs.pop("request")
