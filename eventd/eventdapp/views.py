@@ -143,7 +143,12 @@ def view_own_homepage(request):
 def view_user(request, user_id):
   user = User.objects.get(pk=user_id)
   username = user.username
-  events = Event.objects.filter(owner=user)
+
+  own_events = Event.objects.filter(owner=user)
+  participation_event_ids = Attendence.objects.filter(participant=user).values_list('event_id')
+  participation_events = Event.objects.filter(id__in=participation_event_ids)
+  events = own_events | participation_events
+
   return render(request, 'eventdapp/user.html', {
     'username': username,
     'events': events,
