@@ -7,21 +7,17 @@
   <div><p>{{ event.description }}</p></div>
   <div><p>{{ event.place_text }}</p></div>
   <div><p>{{ event.category }}</p></div>
-  <div><p>Created by: {{ event.owner.user.username }}</p></div>
+  <div><p>Created by: {{ event.owner.username }}</p></div>
   
   {% if is_own %}
     <div><a href="../delete/{{ event.id }}/">Delete<a></div>
     <div><a href="../edit/{{ event.id }}/">Edit<a></div>
+    <br />
   {% endif %}
   
-  {% if is_not_activated %}
-    <div><a href="../attend/{{ event.id }}/going">Join<a></div>
-    <div><a href="../attend/{{ event.id }}/maybe_going">Maybe<a></div>
-    
-  {% else %}{% if is_activated %}
-    <div>{{status}}</div>
-    <div><a href="../attend/{{ event.id }}/{{url_choice1}}">{{attendence_choice1}}<a></div>
-    <div><a href="../attend/{{ event.id }}/{{url_choice2}}">{{attendence_choice2}}<a></div>
-  {% endif %}{% endif %}
+  <div>{{status}}</div>
+  {% for choice in attendence_choices %}
+    <div><a href="../attend/{{ event.id }}/{{ choice.url}}">{{ choice.disp }}<a></div>
+  {% endfor %}
 {% endblock %}
 

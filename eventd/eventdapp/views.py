@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from eventdapp.models import Event
@@ -74,43 +74,20 @@ def view_event(request, event_id):
   event = Event.objects.get(pk=event_id)
   owner_id = event.owner.id
   
-  status = None
-  attendence_choice1 = None
-  url_choice1 = None
-  attendence_choice2 = None
-  url_choice2 = None
-  
   #determine whether the user has activated the participation status
   attendence = Attendence.objects.filter(event__pk = event.id, participant__pk = request.user.id)
   
-  if attendence.exists():
-    status = attendence[0].participation
-    if status == "Going":
-      attendence_choice1 = "Maybe Going"
-      url_choice1 = "maybe_going"
-      attendence_choice2 = "Not Going"
-      url_choice2 = "not_going"
-    elif status == "Maybe Going":
-      attendence_choice1 = "Going"
-      url_choice1 = "going"
-      attendence_choice2 = "Not Going"
-      url_choice2 = "not_going"
-    elif status == "Not Going":
-      attendence_choice1 = "Going"
-      url_choice1 = "going"
-      attendence_choice2 = "Maybe Going"
-      url_choice2 = "maybe_going"
-  return render(request, 'eventdapp/event.html', {
+  attendence_choices = Attendence.get_remaining_choices(
+                          attendence[0].participation if attendence.exists() else None)
+  template_vars = {
     'event': event,
-    'status':status,
-    'attendence_choice1':attendence_choice1,
-    'attendence_choice2':attendence_choice2,
-    'url_choice1':url_choice1,
-    'url_choice2':url_choice2,
+    'attendence_choices':attendence_choices,
     'is_own':(request.user.id == owner_id),
-    'is_activated': (attendence.exists()),
-    'is_not_activated': (attendence.exists()==False),
-    })
+    }
+  if attendence.exists():
+    template_vars['status'] = attendence[0].get_participation_display()
+
+  return render(request, 'eventdapp/event.html', template_vars)
 
 def create_event(request):
   return display_event_form(request, redirect="/")
@@ -178,33 +155,21 @@ def attend_event(request, event_id, is_going):
   event = Event.objects.get(pk=event_id)
   attendence = Attendence.objects.filter(event__pk = event.id, participant__pk = request.user.id)
   user = request.user
-  event = Event.objects.get(pk=event_id)
-  participation_choices = None
-  #import pdb; pdb.set_trace()
-  if is_going == "going":
-    participation_choices = "Going"
-  elif is_going == "maybe_going":
-    participation_choices = "Maybe Going"
-  elif is_going == "not_going":
-    participation_choices = "Not Going"
-    
+
+  is_going = is_going.upper()
+  if not Attendence.is_valid_participation(is_going):
+    raise Http404
+
   if not attendence.exists():
     new_attendence = Attendence()
     new_attendence.participant = user
     new_attendence.event = event
-    new_attendence.participation = participation_choices
+    new_attendence.participation = is_going
     new_attendence.save()    
   elif attendence.exists():
     att = attendence[0]
-    att.participation = participation_choices
+    att.participation = is_going
     att.save()
     
   return HttpResponseRedirect(("../../../{}").format(event.id))
 
-  
-  
-  
-  
-  
-  
-  

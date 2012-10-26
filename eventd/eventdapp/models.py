@@ -11,7 +11,7 @@ class UserProfile(models.Model):
   photo = models.ImageField(upload_to='user_photos', null=True, blank=True)
   friends = models.ManyToManyField('self', null=True, blank=True)
 
-  user = models.ForeignKey(User, unique=True)
+  user = models.ForeignKey(User, unique=True, related_name='profile')
 
   def __unicode__(self):
     return self.user.username
@@ -34,7 +34,19 @@ class Event(models.Model):
     return self.title
     
 class Attendence(models.Model):
-  PARTICIPATION_CHOICES = (("Going","Going"),("Maybe Going","Maybe Going"),("Not Going","Not Going"))
+  PARTICIPATION_CHOICES = (("Y","Going"),("M","Maybe Going"),("N","Not Going"))
+
+  @classmethod
+  def is_valid_participation(cls, choice):
+    return choice in [ch[0] for ch in cls.PARTICIPATION_CHOICES]
+
+  @classmethod
+  def get_remaining_choices(cls, current_choice=None):
+    remaining_choices = [{'url':ch[0], 'disp':ch[1]} for ch in
+                         cls.PARTICIPATION_CHOICES if ch[0] != current_choice]
+    if current_choice == None:
+      del remaining_choices[-1]
+    return remaining_choices
   
   participant = models.ForeignKey(User)
   event = models.ForeignKey("Event")

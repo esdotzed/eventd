@@ -1,5 +1,6 @@
 *.pyc
 *.db
+*.swp
 
 user_photos/
 event_photos/
