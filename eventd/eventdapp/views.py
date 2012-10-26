@@ -52,7 +52,7 @@ class EventForm(ModelForm):
 
   def save(self, commit=True):
     event = super(ModelForm, self).save(commit=False)
-    event.owner = self.request.user.get_profile()
+    event.owner = self.request.user
 
     if commit:
       event.save()
@@ -72,7 +72,13 @@ def register(request):
 
 def view_event(request, event_id):
   event = Event.objects.get(pk=event_id)
-  owner_id = event.owner.user.id
+  owner_id = event.owner.id
+  
+  status = None
+  attendence_choice1 = None
+  url_choice1 = None
+  attendence_choice2 = None
+  url_choice2 = None
   
   #determine whether the user has activated the participation status
   attendence = Attendence.objects.filter(event__pk = event.id, participant__pk = request.user.id)
@@ -81,21 +87,26 @@ def view_event(request, event_id):
     status = attendence[0].participation
     if status == "Going":
       attendence_choice1 = "Maybe Going"
-      url_choice1 = "maybeattend"
+      url_choice1 = "maybe_going"
       attendence_choice2 = "Not Going"
-      url_choice2 = "notattend"
+      url_choice2 = "not_going"
     elif status == "Maybe Going":
       attendence_choice1 = "Going"
-      url_choice1 = "attend"
+      url_choice1 = "going"
       attendence_choice2 = "Not Going"
-      url_choice2 = "notattend"
+      url_choice2 = "not_going"
     elif status == "Not Going":
       attendence_choice1 = "Going"
-      url_choice1 = "attend"
+      url_choice1 = "going"
       attendence_choice2 = "Maybe Going"
-      url_choice2 = "maybeattend"
+      url_choice2 = "maybe_going"
   return render(request, 'eventdapp/event.html', {
     'event': event,
+    'status':status,
+    'attendence_choice1':attendence_choice1,
+    'attendence_choice2':attendence_choice2,
+    'url_choice1':url_choice1,
+    'url_choice2':url_choice2,
     'is_own':(request.user.id == owner_id),
     'is_activated': (attendence.exists()),
     'is_not_activated': (attendence.exists()==False),
@@ -109,7 +120,7 @@ def delete_event(request, event_id):
     return HttpResponseRedirect("/login/")
   user_id = request.user.id 
   event = Event.objects.get(pk=event_id)
-  owner_id = event.owner.user.id
+  owner_id = event.owner.id
   if user_id == owner_id:
     event.delete()
     return HttpResponseRedirect("/")
@@ -123,7 +134,7 @@ def edit_event(request, event_id):
     return HttpResponseRedirect("/login/")
   user_id = request.user.id 
   event = Event.objects.get(pk=event_id)
-  owner_id = event.owner.user.id
+  owner_id = event.owner.id
   if user_id == owner_id:
     return display_event_form(request, redirect="../../{}".format(event.id), instance=event)
   else:
@@ -155,7 +166,7 @@ def view_own_homepage(request):
 def view_user(request, user_id):
   user = User.objects.get(pk=user_id)
   username = user.username
-  events = Event.objects.filter(owner=user.get_profile())
+  events = Event.objects.filter(owner=user)
   return render(request, 'eventdapp/user.html', {
     'username': username,
     'events': events,
@@ -163,8 +174,37 @@ def view_user(request, user_id):
   })  
 
 #three participation views: attend, maybe attend, not attend
-#def attend_event(request, event_id):
+def attend_event(request, event_id, is_going):
+  event = Event.objects.get(pk=event_id)
+  attendence = Attendence.objects.filter(event__pk = event.id, participant__pk = request.user.id)
+  user = request.user
+  event = Event.objects.get(pk=event_id)
+  participation_choices = None
+  #import pdb; pdb.set_trace()
+  if is_going == "going":
+    participation_choices = "Going"
+  elif is_going == "maybe_going":
+    participation_choices = "Maybe Going"
+  elif is_going == "not_going":
+    participation_choices = "Not Going"
+    
+  if not attendence.exists():
+    new_attendence = Attendence()
+    new_attendence.participant = user
+    new_attendence.event = event
+    new_attendence.participation = participation_choices
+    new_attendence.save()    
+  elif attendence.exists():
+    att = attendence[0]
+    att.participation = participation_choices
+    att.save()
+    
+  return HttpResponseRedirect(("../../../{}").format(event.id))
 
-#def maybeattend_event(request, event_id):
-
-# notattend_event(request, event_id):
+  
+  
+  
+  
+  
+  
+  

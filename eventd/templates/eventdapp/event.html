@@ -15,12 +15,13 @@
   {% endif %}
   
   {% if is_not_activated %}
-    <div><a href="../attend/{{ event.id }}/">Join<a></div>
-    <div><a href="../maybeattend/{{ event.id }}/">Maybe<a></div>
+    <div><a href="../attend/{{ event.id }}/going">Join<a></div>
+    <div><a href="../attend/{{ event.id }}/maybe_going">Maybe<a></div>
+    
   {% else %}{% if is_activated %}
     <div>{{status}}</div>
-    <div><a href="../{{url_choice1}}/{{ event.id }}/">{{attendence_choice1}}<a></div>
-    <div><a href="../{{url_choice2}}/{{ event.id }}/">{{attendence_choice2}}<a></div>
+    <div><a href="../attend/{{ event.id }}/{{url_choice1}}">{{attendence_choice1}}<a></div>
+    <div><a href="../attend/{{ event.id }}/{{url_choice2}}">{{attendence_choice2}}<a></div>
   {% endif %}{% endif %}
 {% endblock %}
 

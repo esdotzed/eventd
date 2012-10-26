@@ -11,7 +11,7 @@ class UserProfile(models.Model):
   photo = models.ImageField(upload_to='user_photos', null=True, blank=True)
   friends = models.ManyToManyField('self', null=True, blank=True)
 
-  user = models.ForeignKey(User, unique=True, related_name='profile')
+  user = models.ForeignKey(User, unique=True)
 
   def __unicode__(self):
     return self.user.username
@@ -28,7 +28,7 @@ class Event(models.Model):
   place_longitude = models.FloatField(null=True, blank=True)
   place_latitude = models.FloatField(null=True, blank=True)
   category = models.CharField(max_length=20,choices=CATEGORY_CHOICES)
-  owner=models.ForeignKey("UserProfile", blank=True)
+  owner=models.ForeignKey(User, blank=True)
   
   def __unicode__(self):
     return self.title
@@ -36,8 +36,9 @@ class Event(models.Model):
 class Attendence(models.Model):
   PARTICIPATION_CHOICES = (("Going","Going"),("Maybe Going","Maybe Going"),("Not Going","Not Going"))
   
-  participant = models.ForeignKey("UserProfile")
+  participant = models.ForeignKey(User)
   event = models.ForeignKey("Event")
+  unique_together = (participant, event)
   participation = models.CharField(max_length=15, choices=PARTICIPATION_CHOICES)
   isInvited = models.BooleanField()
   
