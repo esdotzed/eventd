@@ -57,4 +57,7 @@ class Attendence(models.Model):
   def __unicode__(self):
     return self.event.title+"attendence"
 
-   
+class AddFriendRequest(models.Model):
+  requester = models.ForeignKey(User,related_name='requester')
+  requestee = models.ForeignKey(User,related_name='requestee')
+ 

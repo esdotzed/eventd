@@ -8,13 +8,48 @@
     <br />
     <div><a href="/event/create/">Create Event</a></div>
     <br />
+    <div> 
+      <ul>
+      {% for request in allAddFriendRequests %}
+        <li>
+            {{ request.requester }} wants to add you as friends
+            <a href="/respond/confirm/{{ request.id }}/">confirm</a>
+            <a href="/respond/ignore/{{ request.id }}/">ignore</a>
+        </li>
+      {% endfor%}
+      </ul>
+    </div>
+    <br />
   {% endif %}
   {{ username }}'s homepage~
+  
+  {% if is_not_own_not_friend %}
+    <div>
+      <a href="/user/add/{{ user_id }}/">add friend</a>
+    </div>
+  {% endif %}
   <div>
+    Events:
     <ul>
     {% for event in events %}
       <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
     {% endfor %}
     </ul>
   </div>
+<!--   <div>
+    Have chosen events:
+    <ul>
+    {% for event in have_chosen_events %}
+      <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+  <div>
+    Invited events:
+    <ul>
+    {% for event in invited_events %}
+      <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
+    {% endfor %}
+    </ul>
+  </div> -->
 {% endblock %}

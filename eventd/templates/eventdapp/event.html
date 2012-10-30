@@ -9,15 +9,20 @@
   <div><p>{{ event.category }}</p></div>
   <div><p>Created by: {{ event.owner.username }}</p></div>
   
+  <div>
+    <a href="../invite/{{ event.id }}/">Invite<a>
+  </div>
   {% if is_own %}
     <div><a href="../delete/{{ event.id }}/">Delete<a></div>
     <div><a href="../edit/{{ event.id }}/">Edit<a></div>
     <br />
   {% endif %}
   
-  <div>{{status}}</div>
-  {% for choice in attendence_choices %}
-    <div><a href="../attend/{{ event.id }}/{{ choice.url}}">{{ choice.disp }}<a></div>
-  {% endfor %}
+  {% if is_not_own %}
+    <div>{{status}}</div>
+    {% for choice in attendence_choices %}
+      <div><a href="../attend/{{ event.id }}/{{ choice.url}}">{{ choice.disp }}<a></div>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
 

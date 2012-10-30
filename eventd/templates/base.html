@@ -5,6 +5,13 @@
 </head>
 
 <body>
+<form id="search" method="post" action="http://127.0.0.1:8000/event/search/">
+  {% csrf_token %}
+  <input type="text" name="what" value="what">
+  <input type="text" name="lng" value="lng">
+  <input type="text" name="lat" value="lat">
+  <input type="submit" value="Submit">
+</form>
 {% block content %}{% endblock %}
 </body>
 </html>

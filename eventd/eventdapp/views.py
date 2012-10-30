@@ -7,6 +7,7 @@ from eventdapp.models import Event
 from eventdapp.models import UserProfile
 from eventdapp.models import Attendence
 from eventdapp.forms import CustomUserCreationForm, EventForm
+from eventdapp.models import AddFriendRequest
 
 def register(request):
   if request.method == 'POST':
@@ -33,6 +34,7 @@ def view_event(request, event_id):
     'event': event,
     'attendence_choices':attendence_choices,
     'is_own':(request.user.id == owner_id),
+    'is_not_own': (request.user.id != owner_id),
     }
   if attendence.exists():
     template_vars['status'] = attendence[0].get_participation_display()
@@ -93,18 +95,92 @@ def view_own_homepage(request):
 def view_user(request, user_id):
   user = User.objects.get(pk=user_id)
   username = user.username
+  user_profile_id = user.get_profile().id
 
   own_events = Event.objects.filter(owner=user)
   participation_event_ids = Attendence.objects.filter(participant=user).values_list('event_id')
   participation_events = Event.objects.filter(id__in=participation_event_ids)
   events = own_events | participation_events
 
+  addFriendRequests = AddFriendRequest.objects.filter(requester=request.user, requestee=user)
+  is_added = addFriendRequests.exists()
+  
+  #check whether has friendship
+  is_friend = False
+  if len(request.user.get_profile().friends.filter(id=user_profile_id))!= 0:
+    is_friend = True
+
+  allAddFriendRequests = AddFriendRequest.objects.filter(requestee=user)
   return render(request, 'eventdapp/user.html', {
     'username': username,
     'events': events,
-    'is_own': (request.user.id == int(user_id)),
+    "user_id":user_id,
+    'is_own': (request.user.id == int(user_id)), 
+    'is_not_own_not_friend': ((request.user.id != int(user_id)) and (is_friend == False) and (is_added == False)),
+    'allAddFriendRequests': allAddFriendRequests,
   })  
 
+def add_friend(request, user_id):
+  user = User.objects.get(pk=user_id)
+  
+  addFriendRequest = AddFriendRequest()
+  addFriendRequest.requester = request.user
+  addFriendRequest.requestee = user
+  addFriendRequest.save()
+  return view_user(request, user.id)
+
+def invite_friend(request, event_id):
+  request_event_id = event_id
+  user = request.user
+  
+  friendProfileList = user.get_profile().friends.all()
+  friendList = []
+  
+  if friendProfileList.exists():
+    for friendProfile in friendProfileList:    
+      attendence = Attendence.objects.filter(event_id=event_id,participant=friendProfile.user)[:1]  
+      if len(attendence)!=0:
+        pass
+      else:
+        friendList.append(friendProfile.user)
+        # if friendList == []:
+          # friendList = friendProfile.user
+          # import pdb;pdb.set_trace()
+        # else:
+          # friendList = friendList | friendProfile.user   
+  return render(request, 'eventdapp/friend_list.html',{
+    'friendList' : friendList,
+    'event_id' : request_event_id,
+  })
+
+
+def select_friend(request, event_id):
+  event = Event.objects.get(pk=event_id)
+  
+  if request.method == "POST":
+    selected_friendList = request.POST.getlist('friendList')
+    for selected_friend_id in selected_friendList:
+      selected_friend = User.objects.get(pk=selected_friend_id)     
+      attendence = Attendence()
+      attendence.participant = selected_friend
+      attendence.event = event
+      isInvited = True
+      attendence.save()
+      
+  return HttpResponseRedirect(("../../{}").format(event_id))
+
+def respond_addFriendRequest(request, result, request_id):
+  addFriendRequest = AddFriendRequest.objects.get(pk=request_id)
+  if result == 'confirm':
+    requester = addFriendRequest.requester
+    requestee = addFriendRequest.requestee
+    requester.get_profile().friends.add(requestee.get_profile())
+    requestee.get_profile().friends.add(requester.get_profile())  
+  elif result == 'ignore':
+    pass
+  addFriendRequest.delete()
+  return view_user(request, request.user.id)
+  
 #three participation views: attend, maybe attend, not attend
 def attend_event(request, event_id, is_going):
   event = Event.objects.get(pk=event_id)
@@ -127,4 +203,69 @@ def attend_event(request, event_id, is_going):
     att.save()
     
   return HttpResponseRedirect(("../../../{}").format(event.id))
+
+def search_event(request):  
+  if request.method == "POST":
+    what = request.POST.get("what")
+    lng = request.POST.get("lng")
+    lat = request.POST.get("lat")
+    tempEvent = None
+    
+    if what == 'what'and (lng == 'lng') and (lat == 'lat'):
+      pass
+    if what == 'what'and (lng != 'lng') and (lat != 'lat'):
+      # where != None --> filter out locations
+      lng = float(lng)
+      lat = float(lat)
+      tempRawEvent = Event.objects.raw('SELECT id,(3959 * acos( cos( radians(%s) ) * cos( radians( place_latitude ) ) * cos( radians( place_longitude ) - radians(%s) ) + sin( radians(%s) ) * sin( radians( place_latitude ) ) ) ) AS distance FROM eventdapp_event HAVING distance < 25 ORDER BY distance LIMIT 0 , 20',[lat,lng,lat])
+      for event in tempRawEvent:
+        if tempEvent == None:
+          tempEvent = Event.objects.filter(pk=event.id)
+        else:
+          tempEvent = tempEvent | Event.objects.filter(pk=event.id)
+    if (what != 'what') and (lng == 'lng') and (lat == 'lat'):
+      # filter what; filter from event title or description
+      what_tokens = what.split()
+      # filter "what" from event title
+      tempEvent1 = Event.objects.all()
+      for token in what_tokens:
+        tempEvent1 = tempEvent1.filter(title__icontains=token)
+      # filter "what" from event desription
+      tempEvent2 = Event.objects.all()
+      for token in what_tokens:
+        tempEvent2 = tempEvent2.filter(description__icontains=token)
+      # all candidate events
+      tempEvent = tempEvent1 | tempEvent2      
+    if (what != 'what') and (lng != 'lng') and (lat != 'lat'):
+      # where != None --> filter out locations
+      lng = float(lng)
+      lat = float(lat)
+      tempRawEvent = Event.objects.raw('SELECT id,(3959 * acos( cos( radians(%s) ) * cos( radians( place_latitude ) ) * cos( radians( place_longitude ) - radians(%s) ) + sin( radians(%s) ) * sin( radians( place_latitude ) ) ) ) AS distance FROM eventdapp_event HAVING distance < 25 ORDER BY distance LIMIT 0 , 20',[lat,lng,lat])
+      for event in tempRawEvent:
+        if tempEvent == None:
+          tempEvent = Event.objects.get(pk=event.id)
+        else:
+          tempEvent = tempEvent | Event.objects.get(pk=event.id)
+      # filter what; filter from event title or description
+      what_tokens = what.split()
+      # filter "what" from event title
+      tempEvent1 = tempEvent
+      for token in what_tokens:
+        tempEvent1 = tempEvent1.filter(title__icontains=token)
+      # filter "what" from event desription
+      tempEvent2 = tempEvent
+      for token in what_tokens:
+        tempEvent2 = tempEvent2.filter(description__icontains=token)
+      # all candidate events
+      tempEvent = tempEvent1 | tempEvent2  
+      
+    return render(request, 'eventdapp/search_result_event.html',{
+      'tempEvent' : tempEvent,
+    })
+   
+    
+  else:
+    return render(request, 'eventdapp/search_result_event.html',{
+    })
+
 
