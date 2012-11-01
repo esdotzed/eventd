@@ -1,0 +1,5 @@
+Azimuth (degrees of rotation around the z axis). This is the angle between magnetic north and the device's y axis. For example, if the device's y axis is aligned with magnetic north this value is 0, and if the device's y axis is pointing south this value is 180. Likewise, when the y axis is pointing east this value is 90 and when it is pointing west this value is 270.
+
+So far, the direction data can be fetched but the data only represents the direction where the head of the phone is pointed to. Some additional algorithms may be necessary for more robust direction measurement. But it is enough in early stages.
+
+Now, the camera preview is got and both the direction text information and the camera preview are displayed under linear layout. Next step is to consider calculation of direction of a event and display it on the correct position on the camera preview. :)
