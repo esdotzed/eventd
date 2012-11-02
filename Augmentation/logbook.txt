@@ -5,3 +5,5 @@ So far, the direction data can be fetched but the data only represents the direc
 Now, the camera preview is got and both the direction text information and the camera preview are displayed under linear layout. Next step is to consider calculation of direction of a event and display it on the correct position on the camera preview. :)
 
 11-01-2012: First attempt to get location information from wifi provider/ GPS provider. Data not fethed yet, need optimization.
+
+Now, a Destination class is built to get a boolean value of whether a event is within the range of the camera preview.
