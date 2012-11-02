@@ -22,12 +22,16 @@ public class MainActivity extends Activity{
 	private Sensor mOrientation;
 	private TextView tvDirection;
 	private TextView tvLocation;
+	private TextView tvTestEvent;
     private Camera mCamera;
     private CameraPreview mPreview;
     private LocationManager locationManager;
-
+    private Location curLocation = null;
+    private float azimuth_angle;
+    //testing.
+    private Location desLocation = null;
     
-	
+    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +40,7 @@ public class MainActivity extends Activity{
 	    mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 	    tvDirection = (TextView)findViewById(R.id.direction);
 	    tvLocation = (TextView)findViewById(R.id.location);
+	    tvTestEvent = (TextView)findViewById(R.id.testEvent);
         // Create an instance of Camera
         mCamera = getCameraInstance();
         // Create our Preview view and set it as the content of our activity.
@@ -44,7 +49,10 @@ public class MainActivity extends Activity{
         preview.addView(mPreview);
         // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
+        //testing using the longtitude and latitude of Upson Hall.
+        desLocation = new Location ("test");
+        desLocation.setLatitude(42.443892);
+        desLocation.setLongitude(-76.482187);
     }
 	
 
@@ -92,6 +100,10 @@ public class MainActivity extends Activity{
 	      //makeUseOfNewLocation(location);
 	      Log.v("location","Current location: "+location.getLatitude()+", "+location.getLongitude());
 	      tvLocation.setText("Current location: "+location.getLatitude()+", "+location.getLongitude());
+	      curLocation = location;
+	      //testing.
+	      Destination destination  = new Destination(curLocation, desLocation, azimuth_angle);
+	      tvTestEvent.setText(destination.inRange()? "Upson Test Event Ahead!!" : "");
 	    }
 
 	    public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -110,7 +122,7 @@ public class MainActivity extends Activity{
 		}
 
 		public void onSensorChanged(SensorEvent event) {
-		    float azimuth_angle = event.values[0];
+		    azimuth_angle = event.values[0];
 		    float pitch_angle = event.values[1];
 		    float roll_angle = event.values[2];
 		    try {

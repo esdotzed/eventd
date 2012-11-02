@@ -6,6 +6,12 @@ public class Destination {
 	private Location Cur, Des;
 	private float Compass;
 	
+	public Destination(){
+		this.Cur = null;
+		this.Des = null;
+		this.Compass = 0;
+	}
+	
 	public Destination(Location Cur, Location Des, float azimuth_angle){
 		this.Cur = Cur;
 		this.Des = Des;

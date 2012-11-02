@@ -7,3 +7,5 @@ Now, the camera preview is got and both the direction text information and the c
 11-01-2012: First attempt to get location information from wifi provider/ GPS provider. Data not fethed yet, need optimization.
 
 Now, a Destination class is built to get a boolean value of whether a event is within the range of the camera preview.
+
+Now, the application is tested on one fake event held in Upson. When the phone is pointed to the Upson Hall, the event will be displayed in the center of the screen.
