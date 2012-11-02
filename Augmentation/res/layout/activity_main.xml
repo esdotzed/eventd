@@ -14,6 +14,15 @@
         android:text="@string/hello_world"
         tools:context=".MainActivity" />
     
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/location"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Waiting for satelites..."
+        tools:context=".MainActivity" />
+    
     <FrameLayout
     android:id="@+id/camera_preview"
     android:layout_width="fill_parent"

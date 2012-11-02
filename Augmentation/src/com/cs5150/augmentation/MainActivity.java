@@ -21,6 +21,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mOrientation;
 	private TextView tvDirection;
+	private TextView tvLocation;
     private Camera mCamera;
     private CameraPreview mPreview;
     private LocationManager locationManager;
@@ -34,6 +35,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	    mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 	    mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 	    tvDirection = (TextView)findViewById(R.id.direction);
+	    tvLocation = (TextView)findViewById(R.id.location);
         // Create an instance of Camera
         mCamera = getCameraInstance();
         // Create our Preview view and set it as the content of our activity.
@@ -41,10 +43,9 @@ public class MainActivity extends Activity implements SensorEventListener {
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
         // Acquire a reference to the system Location Manager
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 	
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -104,7 +105,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	    public void onLocationChanged(Location location) {
 	      // Called when a new location is found by the network location provider.
 	      //makeUseOfNewLocation(location);
-	      Log.v("location",""+location);
+	      Log.v("location","Current location: "+location.getLatitude()+", "+location.getLongitude());
+	      tvLocation.setText("Current location: "+location.getLatitude()+", "+location.getLongitude());
 	    }
 
 	    public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -113,4 +115,5 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	    public void onProviderDisabled(String provider) {}
 	  };
+
 }
