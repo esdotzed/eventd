@@ -16,7 +16,7 @@ import android.view.Menu;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements SensorEventListener {
+public class MainActivity extends Activity{
 
 	private SensorManager mSensorManager;
 	private Sensor mOrientation;
@@ -44,43 +44,28 @@ public class MainActivity extends Activity implements SensorEventListener {
         preview.addView(mPreview);
         // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
     }
 	
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-	    // Do something here if sensor accuracy changes.
-	    // You must implement this callback in your code.
-	}
+
 
 		  @Override
 	protected void onResume() {
 		super.onResume();
-		mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorManager.registerListener(sensorListener, mOrientation, SensorManager.SENSOR_DELAY_NORMAL);
+        // Register the listener with the Location Manager to receive location updates
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
 		  @Override
 	protected void onPause() {
 	    super.onPause();
-	    mSensorManager.unregisterListener(this);
+	    mSensorManager.unregisterListener(sensorListener);
+	    // Remove the listener previously added
+	    locationManager.removeUpdates(locationListener);
 	}
 
-	public void onSensorChanged(SensorEvent event) {
-	    float azimuth_angle = event.values[0];
-	    float pitch_angle = event.values[1];
-	    float roll_angle = event.values[2];
-	    try {
-	    	Thread.sleep(100);
-	    } catch (InterruptedException e) {
-	    	// TODO Auto-generated catch block
-			e.printStackTrace();
-	    }
-		// Do something with these orientation angles.
-		Log.v ("azimuth_angle", "" + azimuth_angle);
-		Log.v ("pitch_angle","" + pitch_angle);
-		Log.v ("roll_angle",""+roll_angle);
-		tvDirection.setText("Direction: "+azimuth_angle);
-	}
+
 	
 	   @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,5 +100,31 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	    public void onProviderDisabled(String provider) {}
 	  };
+
+	  
+	  
+	private SensorEventListener sensorListener = new SensorEventListener(){
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		    // Do something here if sensor accuracy changes.
+		    // You must implement this callback in your code.
+		}
+
+		public void onSensorChanged(SensorEvent event) {
+		    float azimuth_angle = event.values[0];
+		    float pitch_angle = event.values[1];
+		    float roll_angle = event.values[2];
+		    try {
+		    	Thread.sleep(100);
+		    } catch (InterruptedException e) {
+		    	// TODO Auto-generated catch block
+				e.printStackTrace();
+		    }
+			// Do something with these orientation angles.
+			Log.v ("azimuth_angle", "" + azimuth_angle);
+			Log.v ("pitch_angle","" + pitch_angle);
+			Log.v ("roll_angle",""+roll_angle);
+			tvDirection.setText("Direction: "+azimuth_angle);
+		}
+	};
 
 }
