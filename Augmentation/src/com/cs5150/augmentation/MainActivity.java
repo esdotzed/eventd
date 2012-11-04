@@ -19,15 +19,21 @@ import android.widget.TextView;
 public class MainActivity extends Activity{
 
 	private SensorManager mSensorManager;
-	private Sensor mOrientation;
-	private TextView tvDirection;
-	private TextView tvLocation;
-	private TextView tvTestEvent;
+	private TextView tvDirection, tvLocation, tvTestEvent;
     private Camera mCamera;
     private CameraPreview mPreview;
     private LocationManager locationManager;
     private Location curLocation = null;
     private float azimuth_angle;
+    private Sensor mAccelerometer;
+    private Sensor mMagnetometer;
+    private float[] mLastAccelerometer = new float[3];
+    private float[] mLastMagnetometer = new float[3];
+    private boolean mLastAccelerometerSet = false;
+    private boolean mLastMagnetometerSet = false;
+    private float[] mR = new float[9];
+    private float[] mI = new float[9];
+    private float[] mOrientation = new float[3];
     //testing.
     private Location desLocation = null;
     
@@ -36,8 +42,10 @@ public class MainActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-	    mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-	    mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+	    mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+	    
 	    tvDirection = (TextView)findViewById(R.id.direction);
 	    tvLocation = (TextView)findViewById(R.id.location);
 	    tvTestEvent = (TextView)findViewById(R.id.testEvent);
@@ -47,8 +55,6 @@ public class MainActivity extends Activity{
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
-        // Acquire a reference to the system Location Manager
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         //testing using the longtitude and latitude of Upson Hall.
         desLocation = new Location ("test");
         desLocation.setLatitude(42.443892);
@@ -60,16 +66,31 @@ public class MainActivity extends Activity{
 		  @Override
 	protected void onResume() {
 		super.onResume();
-		mSensorManager.registerListener(sensorListener, mOrientation, SensorManager.SENSOR_DELAY_NORMAL);
+        // Acquire a reference to the system Location Manager
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mLastAccelerometerSet = false;
+        mLastMagnetometerSet = false;
+        mSensorManager.registerListener(sensorListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(sensorListener, mMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        
         // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,	locationListener);
+			curLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			tvTestEvent.setText("Waiting for GPS Signal...");
+		}
+
+		if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,	locationListener);
+			curLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			tvTestEvent.setText("Waiting for Wifi Signal...");
+		}
     }
 
 		  @Override
 	protected void onPause() {
 	    super.onPause();
 	    mSensorManager.unregisterListener(sensorListener);
-	    // Remove the listener previously added
 	    locationManager.removeUpdates(locationListener);
 	}
 
@@ -96,8 +117,6 @@ public class MainActivity extends Activity{
 	// Define a listener that responds to location updates
 	private LocationListener locationListener = new LocationListener() {
 	    public void onLocationChanged(Location location) {
-	      // Called when a new location is found by the network location provider.
-	      //makeUseOfNewLocation(location);
 	      Log.v("location","Current location: "+location.getLatitude()+", "+location.getLongitude());
 	      tvLocation.setText("Current location: "+location.getLatitude()+", "+location.getLongitude());
 	      curLocation = location;
@@ -117,26 +136,27 @@ public class MainActivity extends Activity{
 	  
 	private SensorEventListener sensorListener = new SensorEventListener(){
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		    // Do something here if sensor accuracy changes.
-		    // You must implement this callback in your code.
 		}
 
 		public void onSensorChanged(SensorEvent event) {
-		    azimuth_angle = event.values[0];
-		    float pitch_angle = event.values[1];
-		    float roll_angle = event.values[2];
-		    try {
-		    	Thread.sleep(100);
-		    } catch (InterruptedException e) {
-		    	// TODO Auto-generated catch block
-				e.printStackTrace();
-		    }
-			// Do something with these orientation angles.
-			Log.v ("azimuth_angle", "" + azimuth_angle);
-			Log.v ("pitch_angle","" + pitch_angle);
-			Log.v ("roll_angle",""+roll_angle);
-			tvDirection.setText("Direction: "+azimuth_angle);
-		}
+	        if (event.sensor == mAccelerometer) {
+	            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
+	            mLastAccelerometerSet = true;
+	        } else if (event.sensor == mMagnetometer) {
+	            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
+	            mLastMagnetometerSet = true;
+	        }
+	        if (mLastAccelerometerSet && mLastMagnetometerSet) {
+	            SensorManager.getRotationMatrix(mR, mI, mLastAccelerometer, mLastMagnetometer);
+	            SensorManager.getOrientation(mR, mOrientation);
+	            Log.v("OrientationTestActivity", String.format("Orientation: %f, %f, %f",
+	                                                           mOrientation[0], mOrientation[1], mOrientation[2]));
+	            mOrientation[0] =(mOrientation[0] >= 0)?mOrientation[0]:(float)(Math.PI*2 + mOrientation[0]);
+	            mOrientation[0] = (float)(mOrientation[0]/Math.PI*180);
+	            azimuth_angle = mOrientation[0];
+	            tvDirection.setText("Orientation: "+azimuth_angle);
+	        }
+	    }
 	};
 
 }

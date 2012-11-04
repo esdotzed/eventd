@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
         android:gravity="center"
-        android:text="Direction"
+        android:text="Orientation"
         tools:context=".MainActivity"
         android:textColor="#00ff00" />
     
@@ -27,7 +27,7 @@
 		android:layout_below="@+id/direction"
         android:layout_margin="1dp"
         android:gravity="center"        
-        android:text="Waiting for satelites..."
+        android:text="Waiting for Location..."
         tools:context=".MainActivity"
         android:textColor="#00ff00" />
 

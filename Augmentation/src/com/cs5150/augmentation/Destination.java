@@ -20,7 +20,6 @@ public class Destination {
 	
 	private float getAngle(){
 		double LongOffset = Math.toRadians(Des.getLongitude() - Cur.getLongitude());
-		double LaOffset = Math.toRadians(Des.getLatitude() - Cur.getLatitude());
 		double LaCur = Math.toRadians(Cur.getLatitude());
 		double LaDes = Math.toRadians(Des.getLatitude());
 		double Y = Math.sin(LongOffset) * Math.cos(LaDes);;
