@@ -96,13 +96,13 @@ public class MainActivity extends Activity{
 		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,	locationListener);
 			curLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			//tvTestEvent.setText("Waiting for GPS Signal...");
+			tvTestEvent.setText("Waiting for GPS Signal...");
 		}
 
 		if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,	locationListener);
 			curLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			//tvTestEvent.setText("Waiting for Wifi Signal...");
+			tvTestEvent.setText("Waiting for Wifi Signal...");
 		}
     }
 
@@ -136,20 +136,13 @@ public class MainActivity extends Activity{
 	// Define a listener that responds to location updates
 	private LocationListener locationListener = new LocationListener() {
 	    public void onLocationChanged(Location location) {
+	    	tvTestEvent.setText("");
 	    	Log.v("location","Current location: "+location.getLatitude()+", "+location.getLongitude());
 	        tvLocation.setText("Current location: "+location.getLatitude()+", "+location.getLongitude());
 	        curLocation = location;
 	        //testing.
 	        Destination destination  = new Destination(curLocation, desLocation, azimuth_angle);
-	        //tvTestEvent.setText(destination.inRange()? "Upson Test Event Ahead!!" : "");
-	        if (destination.inRange())
-	        {
-	        	eventButton.setVisibility(View.VISIBLE);
-	        }
-	        else
-	        {
-	        	eventButton.setVisibility(View.INVISIBLE);
-	        }
+	        eventButton.setVisibility(destination.inRange()?View.VISIBLE:View.INVISIBLE);
 	    }
 
 	    public void onStatusChanged(String provider, int status, Bundle extras) {}
