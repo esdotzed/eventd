@@ -13,7 +13,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity{
@@ -36,7 +40,8 @@ public class MainActivity extends Activity{
     private float[] mOrientation = new float[3];
     //testing.
     private Location desLocation = null;
-    
+    private RelativeLayout layout = null;
+    private Button eventButton = null;
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,15 +60,29 @@ public class MainActivity extends Activity{
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
+        layout = (RelativeLayout) findViewById(R.id.relativeLayout);
         //testing using the longtitude and latitude of Upson Hall.
         desLocation = new Location ("test");
         desLocation.setLatitude(42.443892);
         desLocation.setLongitude(-76.482187);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+	        	RelativeLayout.LayoutParams.WRAP_CONTENT,
+	    		RelativeLayout.LayoutParams.WRAP_CONTENT
+	    );
+        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        eventButton = new Button(getBaseContext());
+        eventButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		// Perform action on click
+        	}
+        });
+        eventButton.setText("Upson Test Event Ahead!!");
+        layout.addView(eventButton, layoutParams);
+        eventButton.setVisibility(View.INVISIBLE);
     }
 	
-
-
-		  @Override
+	@Override
 	protected void onResume() {
 		super.onResume();
         // Acquire a reference to the system Location Manager
@@ -77,17 +96,17 @@ public class MainActivity extends Activity{
 		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,	locationListener);
 			curLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			tvTestEvent.setText("Waiting for GPS Signal...");
+			//tvTestEvent.setText("Waiting for GPS Signal...");
 		}
 
 		if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,	locationListener);
 			curLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			tvTestEvent.setText("Waiting for Wifi Signal...");
+			//tvTestEvent.setText("Waiting for Wifi Signal...");
 		}
     }
 
-		  @Override
+	@Override
 	protected void onPause() {
 	    super.onPause();
 	    mSensorManager.unregisterListener(sensorListener);
@@ -96,7 +115,7 @@ public class MainActivity extends Activity{
 
 
 	
-	   @Override
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
@@ -117,20 +136,26 @@ public class MainActivity extends Activity{
 	// Define a listener that responds to location updates
 	private LocationListener locationListener = new LocationListener() {
 	    public void onLocationChanged(Location location) {
-	      Log.v("location","Current location: "+location.getLatitude()+", "+location.getLongitude());
-	      tvLocation.setText("Current location: "+location.getLatitude()+", "+location.getLongitude());
-	      curLocation = location;
-	      //testing.
-	      Destination destination  = new Destination(curLocation, desLocation, azimuth_angle);
-	      tvTestEvent.setText(destination.inRange()? "Upson Test Event Ahead!!" : "");
+	    	Log.v("location","Current location: "+location.getLatitude()+", "+location.getLongitude());
+	        tvLocation.setText("Current location: "+location.getLatitude()+", "+location.getLongitude());
+	        curLocation = location;
+	        //testing.
+	        Destination destination  = new Destination(curLocation, desLocation, azimuth_angle);
+	        //tvTestEvent.setText(destination.inRange()? "Upson Test Event Ahead!!" : "");
+	        if (destination.inRange())
+	        {
+	        	eventButton.setVisibility(View.VISIBLE);
+	        }
+	        else
+	        {
+	        	eventButton.setVisibility(View.INVISIBLE);
+	        }
 	    }
 
 	    public void onStatusChanged(String provider, int status, Bundle extras) {}
-
 	    public void onProviderEnabled(String provider) {}
-
 	    public void onProviderDisabled(String provider) {}
-	  };
+	};
 
 	  
 	  
