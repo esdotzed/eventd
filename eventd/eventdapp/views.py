@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render, render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 
 from eventdapp.models import Event
 from eventdapp.models import UserProfile
@@ -17,9 +16,9 @@ def register(request):
       return HttpResponseRedirect("/")
   else:
     form = CustomUserCreationForm()
-  return render_to_response("eventdapp/register.html", {
+  return render(request, "eventdapp/register.html", {
     'form': form,
-  }, context_instance=RequestContext(request))
+  })
 
 def view_event(request, event_id):
   event = Event.objects.get(pk=event_id)

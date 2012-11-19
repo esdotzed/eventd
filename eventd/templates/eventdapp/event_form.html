@@ -23,7 +23,6 @@
 
 {% block content %}
   <form id="event_form" enctype="multipart/form-data" action="" method="post">
-    {% csrf_token %}
     {{ form.as_p }}
     <input type="button" onclick="searchLocation()" value="Submit">
   </form>
