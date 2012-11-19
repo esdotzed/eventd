@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 
 from eventdapp.models import AddFriendRequest
@@ -147,35 +147,10 @@ def respond_addFriendRequest(request, request_id, is_confirm):
   return HttpResponseRedirect("/")
 
 def invite_friend(request, event_id):
-  request_event_id = event_id
-  user = request.user
-  
-  friendProfileList = user.get_profile().friends.all()
-  friendList = []
-  
-  if friendProfileList.exists():
-    for friendProfile in friendProfileList:    
-      attendence = Attendence.objects.filter(event_id=event_id,participant=friendProfile.user)[:1]  
-      if len(attendence)!=0:
-        pass
-      else:
-        friendList.append(friendProfile.user)
-        # if friendList == []:
-          # friendList = friendProfile.user
-          # import pdb;pdb.set_trace()
-        # else:
-          # friendList = friendList | friendProfile.user   
-  return render(request, 'eventdapp/friend_list.html',{
-    'friendList' : friendList,
-    'event_id' : request_event_id,
-  })
-
-
-def select_friend(request, event_id):
-  event = Event.objects.get(pk=event_id)
-  
-  if request.method == "POST":
+  if request.method == 'POST':
+    event = Event.objects.get(pk=event_id)
     selected_friendList = request.POST.getlist('friendList')
+
     for selected_friend_id in selected_friendList:
       selected_friend = User.objects.get(pk=selected_friend_id)     
       attendence = Attendence()
@@ -184,7 +159,23 @@ def select_friend(request, event_id):
       isInvited = True
       attendence.save()
       
-  return HttpResponseRedirect(("../../{}").format(event_id))
+    return HttpResponseRedirect(("../../{}").format(event_id))
+
+  else:
+    friendProfileList = request.user.get_profile().friends.all()
+    friendList = []
+  
+    if friendProfileList.exists():
+      for friendProfile in friendProfileList:    
+        attendence = Attendence.objects \
+             .filter(event_id=event_id,participant=friendProfile.user)[:1]  
+        if len(attendence) == 0:
+          friendList.append(friendProfile.user)
+
+    return render(request, 'eventdapp/invite.html',{
+      'friendList' : friendList,
+      'event_id' : event_id,
+    })
 
 #three participation views: attend, maybe attend, not attend
 def attend_event(request, event_id, is_going):

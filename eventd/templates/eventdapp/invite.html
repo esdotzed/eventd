@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Friend List{% endblock %}
+{% block title %}Invite Friends{% endblock %}
 
 {% block content %}
     {{event_id}}
-    <form name="select_friend" action="http://127.0.0.1:8000/event/select_friend/{{event_id}}/" method="post">
-    {% csrf_token %}
+    <form name="invite" action="" method="post">
       {% for friend in friendList %}
         <input type="checkbox" name="friendList" value="{{ friend.id }}">{{friend.username}}<br>
       {% endfor %}
       <input type="submit" value="submit">
     </form>
 {% endblock %}
+

@@ -20,8 +20,6 @@ urlpatterns = patterns('',
     url(r'event/search/$','eventdapp.views.search_event'),
     url(r'event/invite/(?P<event_id>\d+)/$',
         'eventdapp.views.invite_friend'),
-    url(r'event/select_friend/(?P<event_id>\d+)/$',
-        'eventdapp.views.select_friend'),
     
     url(r'user/(?P<user_id>\d+)/$','eventdapp.views.view_user'),  
     url(r'user/add/(?P<user_id>\d+)/$','eventdapp.views.add_friend'),
