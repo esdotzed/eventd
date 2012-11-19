@@ -33,7 +33,6 @@ def view_event(request, event_id):
     'event': event,
     'attendence_choices':attendence_choices,
     'is_own':(request.user.id == owner_id),
-    'is_not_own': (request.user.id != owner_id),
     }
   if attendence.exists():
     template_vars['status'] = attendence[0].get_participation_display()
@@ -97,25 +96,31 @@ def view_user(request, user_id):
   user_profile_id = user.get_profile().id
 
   own_events = Event.objects.filter(owner=user)
-  participation_event_ids = Attendence.objects.filter(participant=user).values_list('event_id')
-  participation_events = Event.objects.filter(id__in=participation_event_ids)
+  participation_event_ids = Attendence.objects.filter(participant=user) \
+                              .values_list('event_id')
+  participation_events = Event.objects \
+                           .filter(id__in=participation_event_ids)
   events = own_events | participation_events
 
-  addFriendRequests = AddFriendRequest.objects.filter(requester=request.user, requestee=user)
-  is_added = addFriendRequests.exists()
+  addFriendRequests = AddFriendRequest.objects \
+                        .filter(requester=request.user, requestee=user)
+  has_added = addFriendRequests.exists()
   
   #check whether has friendship
   is_friend = False
-  if len(request.user.get_profile().friends.filter(id=user_profile_id))!= 0:
+  if len(request.user.get_profile().friends \
+       .filter(id=user_profile_id)) != 0:
     is_friend = True
 
   allAddFriendRequests = AddFriendRequest.objects.filter(requestee=user)
+
   return render(request, 'eventdapp/user.html', {
     'username': username,
     'events': events,
-    "user_id":user_id,
-    'is_own': (request.user.id == int(user_id)), 
-    'is_not_own_not_friend': ((request.user.id != int(user_id)) and (is_friend == False) and (is_added == False)),
+    "user_id": user_id,
+    'is_self': (request.user.id == int(user_id)), 
+    'is_friend': is_friend,
+    'has_added': has_added,
     'allAddFriendRequests': allAddFriendRequests,
   })  
 
@@ -126,7 +131,18 @@ def add_friend(request, user_id):
   addFriendRequest.requester = request.user
   addFriendRequest.requestee = user
   addFriendRequest.save()
-  return view_user(request, user.id)
+  return HttpResponseRedirect(("/user/{}").format(user_id))
+
+def respond_addFriendRequest(request, request_id, is_confirm):
+  addFriendRequest = AddFriendRequest.objects.get(pk=request_id)
+  if is_confirm == 'y':
+    requester = addFriendRequest.requester
+    requestee = addFriendRequest.requestee
+    requester.get_profile().friends.add(requestee.get_profile())
+    requestee.get_profile().friends.add(requester.get_profile())  
+
+  addFriendRequest.delete()
+  return HttpResponseRedirect("/")
 
 def invite_friend(request, event_id):
   request_event_id = event_id
@@ -168,18 +184,6 @@ def select_friend(request, event_id):
       
   return HttpResponseRedirect(("../../{}").format(event_id))
 
-def respond_addFriendRequest(request, result, request_id):
-  addFriendRequest = AddFriendRequest.objects.get(pk=request_id)
-  if result == 'confirm':
-    requester = addFriendRequest.requester
-    requestee = addFriendRequest.requestee
-    requester.get_profile().friends.add(requestee.get_profile())
-    requestee.get_profile().friends.add(requester.get_profile())  
-  elif result == 'ignore':
-    pass
-  addFriendRequest.delete()
-  return view_user(request, request.user.id)
-  
 #three participation views: attend, maybe attend, not attend
 def attend_event(request, event_id, is_going):
   event = Event.objects.get(pk=event_id)

@@ -3,7 +3,7 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
-  {% if is_own %}
+  {% if is_self %}
     <div><a href="/logout/">Log out</a></div>
     <br />
     <div><a href="/event/create/">Create Event</a></div>
@@ -13,8 +13,8 @@
       {% for request in allAddFriendRequests %}
         <li>
             {{ request.requester }} wants to add you as friends
-            <a href="/respond/confirm/{{ request.id }}/">confirm</a>
-            <a href="/respond/ignore/{{ request.id }}/">ignore</a>
+            <a href="/respond/{{ request.id }}/y/">confirm</a>
+            <a href="/respond/{{ request.id }}/n/">ignore</a>
         </li>
       {% endfor%}
       </ul>
@@ -23,7 +23,7 @@
   {% endif %}
   {{ username }}'s homepage~
   
-  {% if is_not_own_not_friend %}
+  {% if not is_self and not is_friend and not has_added %}
     <div>
       <a href="/user/add/{{ user_id }}/">add friend</a>
     </div>
