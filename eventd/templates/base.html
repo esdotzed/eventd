@@ -4,7 +4,7 @@
   {% block script %}{% endblock %}
 </head>
 
-<body>
+<body {% block body-attr %}{% endblock %}>
 <form id="search" method="post" action="http://127.0.0.1:8000/event/search/">
   <input type="text" name="what" value="what">
   <input type="text" name="lng" value="lng">
