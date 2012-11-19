@@ -1,12 +1,11 @@
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
-from eventdapp.models import Event
-from eventdapp.models import UserProfile
-from eventdapp.models import Attendence
-from eventdapp.forms import CustomUserCreationForm, EventForm
 from eventdapp.models import AddFriendRequest
+from eventdapp.models import Attendence, Event, UserProfile
+from eventdapp.forms import CustomUserCreationForm, EventForm
+from eventdapp.utils import is_mobile
 
 def register(request):
   if request.method == 'POST':
@@ -16,7 +15,10 @@ def register(request):
       return HttpResponseRedirect("/")
   else:
     form = CustomUserCreationForm()
-  return render(request, "eventdapp/register.html", {
+
+  template = "eventdapp/register.xml" if is_mobile(request) \
+               else "eventdapp/register.html"
+  return render(request, template, {
     'form': form,
   })
 

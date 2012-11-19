@@ -1,0 +1,6 @@
+<form>
+{% for field in form %}
+  <field>{{ field.name }}</field>
+{% endfor %}
+</form>
+
