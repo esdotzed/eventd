@@ -2,12 +2,48 @@
 
 {% block title %}Search Result{% endblock %}
 
-{% block content %}
- <div>
-   <ul>
-   {% for event in events %}
-     <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
-  {% endfor %}
-  </ul>
-</div>
+{% block script %}
+  <script type="text/javascript">
+    function initialize() {
+      var latlng = new google.maps.LatLng({{ avg_lat }},
+                                          {{ avg_lng }});
+      var mapOptions = { center: latlng,
+                         zoom: {{ zoom }},
+                         mapTypeId: google.maps.MapTypeId.ROADMAP };
+      var map = new google.maps.Map(document.getElementById("map_canvas"),
+                                    mapOptions);
+
+      {% for event in events %}
+        var marker{{ forloop.counter0 }} =
+              new google.maps.Marker({ map: map,
+                                       title: "{{ event.place_text }}",
+               position: new google.maps.LatLng( {{ event.place_latitude }},
+                                           {{ event.place_longitude }}) });
+        var infowindow{{ forloop.counter0 }} = new google.maps.InfoWindow({
+                                  content: "{{ event.place_text }}" });
+        
+        google.maps.event.addListener(marker{{ forloop.counter0}}, 'click',
+                    function() {
+    infowindow{{ forloop.counter0 }}.open(map,marker{{ forloop.counter0 }});
+                               });
+      {% endfor %}
+    }
+  </script>
 {% endblock %}
+
+{% block content %}
+  <div>
+    <ul>
+    {% for event in events %}
+      <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+  <br />
+  <div id="map_canvas" style="width:300px;height:300px"></div>
+{% endblock %}
+
+{% block body-attr %}
+  onload="initialize()"
+{% endblock %}
+

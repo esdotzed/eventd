@@ -202,6 +202,8 @@ def attend_event(request, event_id, is_going):
 
 def search_event(request):  
   events = Event.objects.none()
+  avg_lat, avg_lng = 38.0, -97.0
+  zoom = 3
 
   if request.method == "POST":
     what = request.POST.get("what")
@@ -228,8 +230,17 @@ def search_event(request):
 
     # all candidate events
     events = tempEvent1 | tempEvent2  
+
+    if events:
+      num_events = float(events.count())
+      avg_lng = sum(event.place_longitude for event in events) / num_events
+      avg_lat = sum(event.place_latitude for event in events) / num_events
+      zoom = 12
  
   return render(request, 'eventdapp/search_result_event.html',{
-    'events' : events,
+    'events': events,
+    'avg_lng': avg_lng,
+    'avg_lat': avg_lat,
+    'zoom': zoom,
   })
 
