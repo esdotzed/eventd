@@ -201,43 +201,35 @@ def attend_event(request, event_id, is_going):
   return HttpResponseRedirect(("../../../{}").format(event.id))
 
 def search_event(request):  
+  events = Event.objects.none()
+
   if request.method == "POST":
     what = request.POST.get("what")
     lng = request.POST.get("lng")
     lat = request.POST.get("lat")
-    tempEvent = None
     
       # where != None --> filter out locations
     lng = float(lng)
     lat = float(lat)
     tempRawEvent = Event.objects.raw('SELECT id,(3959 * acos( cos( radians(%s) ) * cos( radians( place_latitude ) ) * cos( radians( place_longitude ) - radians(%s) ) + sin( radians(%s) ) * sin( radians( place_latitude ) ) ) ) AS distance FROM eventdapp_event HAVING distance < 25 ORDER BY distance LIMIT 0 , 20',[lat,lng,lat])
     for event in tempRawEvent:
-      if tempEvent == None:
-        tempEvent = Event.objects.filter(pk=event.id)
-      else:
-        tempEvent = tempEvent | Event.objects.filter(pk=event.id)
-    # filter what; filter from event title or description
+      events = events | Event.objects.filter(pk=event.id)
     what_tokens = what.split()
+
     # filter "what" from event title
-    tempEvent1 = tempEvent
+    tempEvent1 = events
     for token in what_tokens:
       tempEvent1 = tempEvent1.filter(title__icontains=token)
-    # filter "what" from event desription
-    tempEvent2 = tempEvent
+
+    # filter "what" from event description
+    tempEvent2 = events
     for token in what_tokens:
       tempEvent2 = tempEvent2.filter(description__icontains=token)
-    # all candidate events
-    if tempEvent1 and tempEvent2:
-      tempEvent = tempEvent1 | tempEvent2  
-    else:
-      tempEvent = []
-      
-    return render(request, 'eventdapp/search_result_event.html',{
-      'tempEvent' : tempEvent,
-    })
-    
-  else:
-    return render(request, 'eventdapp/search_result_event.html',{
-    })
 
+    # all candidate events
+    events = tempEvent1 | tempEvent2  
+ 
+  return render(request, 'eventdapp/search_result_event.html',{
+    'events' : events,
+  })
 

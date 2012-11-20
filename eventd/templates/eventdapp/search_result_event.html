@@ -5,7 +5,7 @@
 {% block content %}
  <div>
    <ul>
-   {% for event in tempEvent %}
+   {% for event in events %}
      <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
   {% endfor %}
   </ul>
