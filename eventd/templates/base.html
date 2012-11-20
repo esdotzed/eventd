@@ -2,14 +2,64 @@
 <head>
   <title>{% block title %}{% endblock %}</title>
   {% block script %}{% endblock %}
+  <script type="text/javascript"
+    src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBJn4dI5sR-aB5YPbDie0exiEwVzo1dOrE&sensor=false">
+  </script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    function validate() {
+      if ($("#where").val().length !== 0) {
+        searchWithText();
+      } else {
+        searchWithUserLocation();
+      }
+    }
+
+    function searchWithUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition,
+                                                 handleError);
+      }
+    }
+
+    function showPosition(position) {
+      $("#lng").val(position.coords.longitude);
+      $("#lat").val(position.coords.latitude);
+      $("#search_form").submit();     
+    }
+
+    function handleError(positionError) {
+      if (positionError.code === positionError.PERMISSION_DENIED) {
+        $("#loc_error")
+          .html("Please enter a location or enable geolocation.");
+      }
+    }
+
+    function searchWithText() {
+      var address = $("#where").val();
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({address: address}, function(results, status) {
+        var loc = results[0].geometry.location;
+        $("#lng").val(loc.lng());
+        $("#lat").val(loc.lat());
+        $("#search_form").submit();
+      });
+    }
+  </script>
 </head>
 
 <body {% block body-attr %}{% endblock %}>
-<form id="search" method="post" action="http://127.0.0.1:8000/event/search/">
-  <input type="text" name="what" value="what">
-  <input type="text" name="lng" value="lng">
-  <input type="text" name="lat" value="lat">
-  <input type="submit" value="Submit">
+<form id="search_form" method="post"
+      action="http://127.0.0.1:8000/event/search/">
+  <label for="what">Search for:</label>
+  <input type="text" name="what" id="what" value="">
+  <label for="where">near:</label>
+  <input type="text" name="where" id="where" value="">
+
+  <input type="hidden" id="lng" name="lng" value="">
+  <input type="hidden" id="lat" name="lat" value="">
+  <input type="button" onclick="validate()" value="Submit">
+  <span id="loc_error"></span>
 </form>
 {% block content %}{% endblock %}
 </body>
