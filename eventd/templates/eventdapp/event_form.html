@@ -4,15 +4,101 @@
 
 {% block script %}
   <script type="text/javascript">
+    var map;
+    var places;
+    var markers = [];
+
+    function handleSubmit() {
+      searchLocation();
+      $("#event_form").submit();
+    }
+
     function searchLocation() {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+      markers = [];
       var address = $("#id_place_text").val();
       var geocoder = new google.maps.Geocoder();
       geocoder.geocode({address: address}, function(results, status) {
-        var loc = results[0].geometry.location;
-        $("#id_place_longitude").val(loc.lng());
-        $("#id_place_latitude").val(loc.lat());
-        $("#event_form").submit();
+        places = results;
+        fillLatLngInputs(places[0]);
+        for (var i = 0; i < results.length; i++) {
+          var loc = results[i].geometry.location;
+          var marker = new google.maps.Marker({ map: map,
+                                            //title: locText,
+                                            position: loc });
+          markers.push(marker);
+          addListener(marker, i);
+          map.setCenter(calcCenter(results));
+          map.setZoom(calcZoom(results));
+        }
       });
+    }
+
+    function fillLatLngInputs(loc) {
+      var geoLoc = loc.geometry.location;
+      $("#id_place_longitude").val(geoLoc.lng());
+      $("#id_place_latitude").val(geoLoc.lat());
+    }
+
+    function addListener(marker, idx) {
+      google.maps.event.addListener(marker, 'click',
+            function() {
+              $("#id_place_text").val(places[idx].formatted_address);
+              fillLatLngInputs(places[idx]);
+            });
+    }
+
+    function calcCenter(locs) {
+      var avg_lat = 0.0;
+      var avg_lng = 0.0;
+      for (var i = 0; i < locs.length; i++) {
+        avg_lng += locs[i].geometry.location.lng();
+        avg_lat += locs[i].geometry.location.lat();
+      }
+      return new google.maps.LatLng(avg_lat / locs.length,
+                                    avg_lng / locs.length);
+    }
+
+    function calcZoom(locs) {
+      var GLOBE_WIDTH = 256;
+
+      if (locs.length === 0)
+        return 3;
+
+      var west = 180.0;
+      var east = -180.0;
+      for (var i = 0; i < locs.length; i++) {
+        var lng = locs[i].geometry.location.lng();
+        if (lng < west)
+          west = lng;
+        if (lng > east)
+          east = lng;
+      }
+      var angle = east - west;
+      if (angle < 0) {
+        angle += 360;
+      }
+      var zoom = Math.round(Math.log(100.0 * 360 / angle / GLOBE_WIDTH) /
+                            Math.LN2);
+      if (zoom === Infinity)
+        zoom = 13;
+      return zoom;
+    }
+
+    function initialize() {
+      var latlng = new google.maps.LatLng(38.0, -97.0);
+      var mapOptions = { center: latlng,
+                         zoom: 3,
+                         mapTypeId: google.maps.MapTypeId.ROADMAP };
+      map = new google.maps.Map(document.getElementById("map_canvas"),
+                                mapOptions);
+
+      if ($("#id_place_text").val() != "")
+        searchLocation();
+
+      $("#id_place_text").attr("onblur","searchLocation();");
     }
   </script>
 {% endblock %}
@@ -20,7 +106,13 @@
 {% block content %}
   <form id="event_form" enctype="multipart/form-data" action="" method="post">
     {{ form.as_p }}
-    <input type="button" onclick="searchLocation()" value="Submit">
+    <input type="button" onclick="handleSubmit()" value="Submit">
   </form>
+
+  <div id="map_canvas" style="width:300px;height:300px"></div>
+{% endblock %}
+
+{% block body-attr %}
+  onload="initialize()"
 {% endblock %}
 
