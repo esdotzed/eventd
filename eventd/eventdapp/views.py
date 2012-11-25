@@ -213,7 +213,19 @@ def search_event(request):
       # where != None --> filter out locations
     lng = float(lng)
     lat = float(lat)
-    tempRawEvent = Event.objects.raw('SELECT id,(3959 * acos( cos( radians(%s) ) * cos( radians( place_latitude ) ) * cos( radians( place_longitude ) - radians(%s) ) + sin( radians(%s) ) * sin( radians( place_latitude ) ) ) ) AS distance FROM eventdapp_event HAVING distance < 25 ORDER BY distance LIMIT 0 , 20',[lat,lng,lat])
+    tempRawEvent = Event.objects.raw("""
+SELECT * FROM
+  (SELECT id, place_latitude, place_longitude,
+        (3959 * acos(cos(radians(%s)) * cos(radians(place_latitude)) *
+                           cos(radians(place_longitude) - radians(%s)) +
+                           sin(radians(%s)) * sin(radians(place_latitude))))
+   AS distance
+   FROM eventdapp_event) AS distances
+WHERE distance < 20
+ORDER BY distance
+OFFSET 0
+LIMIT 20;
+""",[lat,lng,lat])
     for event in tempRawEvent:
       events = events | Event.objects.filter(pk=event.id)
     what_tokens = what.split()
