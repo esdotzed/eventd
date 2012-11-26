@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+ 	<RelativeLayout 
+        android:id="@+id/Header"
+        android:layout_alignParentTop="true"
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="50dip"
+		>
+	</RelativeLayout>
+
+ 	<RelativeLayout
+ 	    android:layout_width="fill_parent"
+ 	    android:layout_height="match_parent"
+ 	    android:background="#FFFFFF"
+ 	    android:orientation="vertical" >
+ 		
+ 	      <EditText
+ 	        android:id="@+id/uersername"
+ 	        android:layout_width="wrap_content"
+ 	        android:layout_height="wrap_content"
+ 	        android:layout_centerHorizontal="true"
+ 	        android:layout_marginTop="141dp"
+ 	        android:ems="8"
+ 	        android:hint="@string/email"
+ 	      />
+ 	      
+ 		<EditText
+ 	        android:id="@+id/Password_Field"
+ 	        android:layout_width="wrap_content"
+ 	        android:layout_height="wrap_content"
+ 	        android:layout_centerInParent="true"
+ 	        android:ems="8"
+ 	        android:inputType="textPassword" 
+ 	        android:hint="@string/password"
+ 	        android:layout_below="@id/Email_Field"/>
+ 	    
+ 	  
+
+ 	    <ImageButton
+ 	        android:id="@+id/EnterButton"
+ 	        android:layout_width="wrap_content"
+ 	        android:layout_height="wrap_content"
+ 	        android:layout_below="@id/Password_Field"
+ 	        android:layout_centerHorizontal="true"
+ 	        android:layout_marginTop="32dp"
+ 	        android:background="@android:color/transparent"
+ 	        android:contentDescription="@string/login_hint"
+ 	         />
+//
+ 	    <Button
+ 	        android:id="@+id/login"
+ 	        android:layout_width="wrap_content"
+ 	        android:layout_height="wrap_content"
+ 	        android:layout_alignTop="@+id/EnterButton"
+ 	        android:layout_centerHorizontal="true"
+ 	        android:text="login" />
+//
+ 	</RelativeLayout>
+ 	
+</LinearLayout>

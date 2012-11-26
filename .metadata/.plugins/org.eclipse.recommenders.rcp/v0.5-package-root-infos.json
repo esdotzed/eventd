@@ -1,0 +1,28 @@
+[
+  {
+    "symbolicName": "annotations",
+    "version": {
+      "major": -1,
+      "minor": -1,
+      "micro": -1,
+      "qualifier": ""
+    },
+    "jarFileFingerprint": "f68f82be8f2051d277ee74fb859d63de8e33053c",
+    "jarFileModificationDate": "2012-08-08T15:39:06-04:00",
+    "location": "/home/alex/android-sdk-linux/tools/support/annotations.jar",
+    "javaRuntime": false
+  },
+  {
+    "symbolicName": "android",
+    "version": {
+      "major": -1,
+      "minor": -1,
+      "micro": -1,
+      "qualifier": ""
+    },
+    "jarFileFingerprint": "b50d42b32e1d8a6c2d5f19a846474d5e2199c68e",
+    "jarFileModificationDate": "2012-10-31T19:16:51-04:00",
+    "location": "/home/alex/android-sdk-linux/platforms/android-10/android.jar",
+    "javaRuntime": false
+  }
+]
