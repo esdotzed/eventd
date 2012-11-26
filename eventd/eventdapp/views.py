@@ -5,7 +5,7 @@ from django.shortcuts import render
 from eventdapp.models import AddFriendRequest
 from eventdapp.models import Attendence, Event, UserProfile
 from eventdapp.forms import CustomUserCreationForm, EventForm
-from eventdapp.utils import is_mobile, is_valid_latlng
+from eventdapp.utils import is_mobile, is_valid_latlng, content_type_from
 
 def register(request):
   if request.method == 'POST':
@@ -120,7 +120,10 @@ def view_user(request, user_id):
 
   allAddFriendRequests = AddFriendRequest.objects.filter(requestee=user)
 
-  return render(request, 'eventdapp/user.html', {
+  template = 'eventdapp/user.xml' if is_mobile(request) \
+             else 'eventdapp/user.html'
+
+  return render(request, template, {
     'username': username,
     'events': events,
     "user_id": user_id,
@@ -128,7 +131,7 @@ def view_user(request, user_id):
     'is_friend': is_friend,
     'has_added': has_added,
     'allAddFriendRequests': allAddFriendRequests,
-  })  
+  }, content_type=content_type_from(request))  
 
 def add_friend(request, user_id):
   user = User.objects.get(pk=user_id)

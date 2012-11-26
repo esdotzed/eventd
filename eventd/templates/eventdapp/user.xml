@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+  <user>
+    <id>{{ user_id }}</id>
+    <username>{{ username }}</username>
+  </user>
+  <events>
+    {% for event in events %}
+    <event>
+      <id>{{ event.id }}</id>
+      <title>{{ event.title }}</title>
+      <lat>{{ event.place_latitude }}</lat>
+      <lng>{{ event.place_longitude }}</lng>
+      <txt>{{ event.place_text }}</txt>
+    </event>
+    {% endfor %}
+  </events>
+</response>
+
