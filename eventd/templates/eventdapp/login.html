@@ -2,6 +2,106 @@
 
 {% block title %}Log-in{% endblock %}
 
+{% block script %}
+  <script type="text/javascript">
+    var map;
+    var markers = [];
+
+    function initialize() {
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(searchEvents,
+                                                 handleError);
+      }
+    }
+
+    function createMarker(e) {
+      var lat = e.getElementsByTagName("lat")[0].firstChild.data;
+      var lng = e.getElementsByTagName("lng")[0].firstChild.data;
+      var txt = e.getElementsByTagName("txt")[0].firstChild.data;
+
+      var marker = new google.maps.Marker({ map: map,
+                                    //   title: "{{ event.place_text }}",
+               position: new google.maps.LatLng(parseFloat(lat),
+                                                parseFloat(lng)) });
+      markers.push(marker); 
+
+      var infowindow = new google.maps.InfoWindow({ content: txt });
+        
+      google.maps.event.addListener(marker, 'click', function() {
+                                    infowindow.open(map,marker)});
+    }
+
+    function calcCenter() {
+      var avg_lat = 0.0;
+      var avg_lng = 0.0;
+      for (var i = 0; i < markers.length; i++) {
+        avg_lng += markers[i].getPosition().lng();
+        avg_lat += markers[i].getPosition().lat();
+      }
+      return new google.maps.LatLng(avg_lat / markers.length,
+                                    avg_lng / markers.length);
+    }
+
+    function calcZoom() {
+      var GLOBE_WIDTH = 256;
+
+      if (markers.length === 0)
+        return 3;
+
+      var west = 180.0;
+      var east = -180.0;
+      for (var i = 0; i < markers.length; i++) {
+        var lng = markers[i].getPosition().lng();
+        if (lng < west)
+          west = lng;
+        if (lng > east)
+          east = lng;
+      }
+      var angle = east - west;
+      if (angle < 0) {
+        angle += 360;
+      }
+      var zoom = Math.round(Math.log(100.0 * 360 / angle / GLOBE_WIDTH) /
+                            Math.LN2);
+      if (zoom === Infinity)
+        zoom = 13;
+      return zoom;
+    }
+
+    function searchEvents(position) {
+      var url = 'event/search_xml/?lat=' + position.coords.latitude +
+                '&lng=' + position.coords.longitude;
+
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET", url, false);
+      xmlhttp.send();
+      doc = xmlhttp.responseXML.getElementsByTagName("event");
+      
+      if (doc.length === 0)
+        return;
+
+      var mapOptions = { center: new google.maps.LatLng(38.0, -97.0),
+                         zoom: 3,
+                         mapTypeId: google.maps.MapTypeId.ROADMAP };
+      map = new google.maps.Map(document.getElementById("map_canvas"),
+                                    mapOptions);
+
+      for (var i = 0; i < doc.length; i++) {
+        createMarker(doc[i]);
+      }
+
+      map.setCenter(calcCenter());
+      map.setZoom(calcZoom());
+    }
+
+    function handleError(positionError) {
+      if (positionError.code === positionError.PERMISSION_DENIED) {
+      }
+    }
+  </script>
+{% endblock %}
+
 {% block content %}
   <form action="" method="post">
     <label for="username">Username:</label>
@@ -13,5 +113,12 @@
     <input type="hidden" name="next" value="/" />
     <a href="/register/">Register</a>
   </form>
+
+  <br />
+  <div id="map_canvas" style="width:300px;height:300px"></div>
+{% endblock %}
+
+{% block body-attr %}
+  onload="initialize()"
 {% endblock %}
 
