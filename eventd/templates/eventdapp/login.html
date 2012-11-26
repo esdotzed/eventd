@@ -11,7 +11,7 @@
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(searchEvents,
-                                                 handleError);
+                                                 handleGeolocError);
       }
     }
 
@@ -95,7 +95,7 @@
       map.setZoom(calcZoom());
     }
 
-    function handleError(positionError) {
+    function handleGeolocError(positionError) {
       if (positionError.code === positionError.PERMISSION_DENIED) {
       }
     }
