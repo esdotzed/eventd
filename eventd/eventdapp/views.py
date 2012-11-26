@@ -33,8 +33,11 @@ def view_event(request, event_id):
                           attendence[0].participation if attendence.exists() else None)
   template_vars = {
     'event': event,
-    'attendence_choices':attendence_choices,
-    'is_own':(request.user.id == owner_id),
+    'attendence_choices': attendence_choices,
+    'is_own': (request.user.id == owner_id),
+    'share_subject': 'Check out this event!',
+    'share_body': "Check out the event at" + '%0D%0A%0D%0A' + \
+                  request.build_absolute_uri(),
     }
   if attendence.exists():
     template_vars['status'] = attendence[0].get_participation_display()
