@@ -7,6 +7,7 @@ package com.eventd;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,6 +21,7 @@ public class EventdAndroid extends Activity {
 	private Button home_btn_schedule=null;
 	private Button home_btn_sessions=null;
 	private Button home_btn_vendors=null;
+	private String cookieString = null;
 	
 	
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,21 @@ public class EventdAndroid extends Activity {
         home_btn_schedule.setOnClickListener(new AnotherButtonListener2());
         home_btn_vendors.setOnClickListener(new AnotherButtonListener3());
         home_btn_sessions.setOnClickListener(new AnotherButtonListener4());
+        
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            cookieString = extras.getString("cookieString");
+            Log.i("cookies", cookieString);
+        }
+        else
+        {
+        	Intent intent = new Intent();
+        	intent.setClass(EventdAndroid.this, login.class);
+        	EventdAndroid.this.startActivity(intent);
+        }
+        
+        
+        
     }
     
     /** Handle "schedule" action. */
@@ -52,22 +69,7 @@ public class EventdAndroid extends Activity {
     	//startActivity(new Intent(this, com.eventd.feedback.sendMySQL.class));
     }
     
-//    public void onSessionsClick(View v) {
-//    	Toast.makeText(this, "To be implemented :-)", Toast.LENGTH_LONG).show();
-//    }
-    
-  //  public void onNotesClick(View v) {
-    	//Toast.makeText(this, "To be implemented :-)", Toast.LENGTH_LONG).show();
-   // 	Intent intent1 = new Intent();
-		
-	//	intent1.setClass(EventdAndroid.this, Createvent.class);
 
-	//	EventdAndroid.this.startActivity(intent1);
- //   }
-    
-//    public void onVendorsClick(View v) {
-//    	Toast.makeText(this, "Time to get some coffee :-)", Toast.LENGTH_LONG).show();
-//    }
     
     public void onSearchClick(View v) {
     	Toast.makeText(this, "Search to be implemented :-)", Toast.LENGTH_LONG).show();
@@ -122,11 +124,12 @@ public class EventdAndroid extends Activity {
         class AnotherButtonListener3 implements OnClickListener{
     	    
         	public void onClick (View v) {
-        	Intent intent1 = new Intent();
-
-        	intent1.setClass(EventdAndroid.this, Myevent.class);
-
-        	EventdAndroid.this.startActivity(intent1);
+        	
+            Intent intent=new Intent(EventdAndroid.this,SelectEvent.class);
+            Bundle bundle = new Bundle();   
+            bundle.putString( "cookieString",cookieString);        
+            intent.putExtras(bundle);   
+            startActivity(intent); 
 
 
         	    }
