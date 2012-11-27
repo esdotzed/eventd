@@ -7,6 +7,9 @@ def is_valid_latlng(lat, lng):
   return (lat != '' and lat != u'' and lat != None) and \
          (lng != '' and lng != u'' and lng != None)
 
+def ext_from(request):
+  return 'xml' if is_mobile(request) else 'html'
+
 def content_type_from(request):
-  return 'text/xml' if is_mobile(request) else 'text/html'
+  return 'text/%s' % ext_from(request)
 

@@ -5,7 +5,7 @@ from django.shortcuts import render
 from eventdapp.models import AddFriendRequest
 from eventdapp.models import Attendence, Event, UserProfile
 from eventdapp.forms import CustomUserCreationForm, EventForm
-from eventdapp.utils import is_mobile, is_valid_latlng, content_type_from
+from eventdapp.utils import is_valid_latlng, content_type_from, ext_from
 
 def register(request):
   if request.method == 'POST':
@@ -16,12 +16,11 @@ def register(request):
   else:
     form = CustomUserCreationForm()
 
-  template = "eventdapp/register.xml" if is_mobile(request) \
-               else "eventdapp/register.html"
-  content_type = 'text/xml' if is_mobile(request) else 'text/html'
+  template = "eventdapp/register.%s" % ext_from(request)
+
   return render(request, template, {
     'form': form,
-  }, content_type=content_type)
+  }, content_type=content_type_from(request))
 
 def view_event(request, event_id):
   event = Event.objects.get(pk=event_id)
@@ -43,7 +42,10 @@ def view_event(request, event_id):
   if attendence.exists():
     template_vars['status'] = attendence[0].get_participation_display()
 
-  return render(request, 'eventdapp/event.html', template_vars)
+  template = 'eventdapp/event.%s' % ext_from(request)
+
+  return render(request, template, template_vars, \
+                content_type=content_type_from(request))
 
 def create_event(request):
   return display_event_form(request, redirect="/")
@@ -120,8 +122,7 @@ def view_user(request, user_id):
 
   allAddFriendRequests = AddFriendRequest.objects.filter(requestee=user)
 
-  template = 'eventdapp/user.xml' if is_mobile(request) \
-             else 'eventdapp/user.html'
+  template = 'eventdapp/user.%s' % ext_from(request)
 
   return render(request, template, {
     'username': username,
