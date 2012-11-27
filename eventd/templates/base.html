@@ -1,11 +1,12 @@
 <html>
 <head>
   <title>{% block title %}{% endblock %}</title>
-  {% block script %}{% endblock %}
+  {% block style %}{% endblock %}
   <script type="text/javascript"
-    src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBJn4dI5sR-aB5YPbDie0exiEwVzo1dOrE&sensor=false">
+    src="//maps.googleapis.com/maps/api/js?key=AIzaSyBJn4dI5sR-aB5YPbDie0exiEwVzo1dOrE&sensor=false">
   </script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  </script>
   <script type="text/javascript">
     function validate() {
       if ($("#where").val().length !== 0) {
@@ -46,6 +47,7 @@
       });
     }
   </script>
+  {% block script %}{% endblock %}
 </head>
 
 <body {% block body-attr %}{% endblock %}>
