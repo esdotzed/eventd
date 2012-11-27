@@ -61,10 +61,27 @@ public class login extends Activity{
 	        
 	    	public void onClick (View v) {
 
-	    	Intent intent = new Intent();	    	
+	    	Intent intent = new Intent();	
+            HttpClient client = new DefaultHttpClient();  
+            client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "MobileEventd");
+	    	
+            try {  
+                String getURL = "http://hidden-brushlands-4742.herokuapp.com/login/";
+                HttpGet get = new HttpGet(getURL);
+                HttpResponse responseGet = client.execute(get);  
+                HttpEntity resEntityGet = responseGet.getEntity();  
+                if (resEntityGet != null) {  
+                            //do something with the response
+                            Log.i("GET RESPONSE",EntityUtils.toString(resEntityGet));
+                        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            
+            
+            
+            
 	        try {
-	            HttpClient client = new DefaultHttpClient();  
-	            client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "MobileEventd");
 	            String postURL = "http://hidden-brushlands-4742.herokuapp.com/login/";
 	            HttpPost post = new HttpPost(postURL);
 	            List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -77,14 +94,21 @@ public class login extends Activity{
 	            HttpEntity resEntity = responsePOST.getEntity();  
 	            if (resEntity != null) {    
 	                Log.i("RESPONSE",EntityUtils.toString(resEntity));
+	                String mCookies[] = null;
+	                for (String s: mCookies){
+	                	s = responsePOST.getHeaders("cookie").toString();
+	                }
+	                for (String s: mCookies)
+	                	Log.i("cookie", s);
 	            }
 	            else
 	            	Log.i("RESPONSE","Failed!");
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
-	    	//intent.setClass(login.this, EventdAndroid.class);
 
+	        
+	    	//intent.setClass(login.this, EventdAndroid.class);
 	    	//login.this.startActivity(intent);
 
 	    	}
