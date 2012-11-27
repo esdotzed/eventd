@@ -2,7 +2,18 @@
 
 {% block title %}Event Form{% endblock %}
 
+{% block style %}
+  <link rel="stylesheet" media="all" type="text/css" href="http://code.jquery.com/ui/1.9.1/themes/smoothness/jquery-ui.css" />
+  <link rel="stylesheet" type="text/css" href="/static/timepicker.css" />
+{% endblock %}
+
 {% block script %}
+  <script
+    src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js">
+  </script>
+  <script type="text/javascript"
+    src="/static/jquery-ui-timepicker-addon.js">
+  </script>
   <script type="text/javascript">
     var map;
     var places;
@@ -99,6 +110,9 @@
         searchLocation();
 
       $("#id_place_text").attr("onblur","searchLocation();");
+
+      $("#id_start_time").datetimepicker();
+      $("#id_end_time").datetimepicker();
     }
   </script>
 {% endblock %}

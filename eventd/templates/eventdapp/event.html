@@ -31,8 +31,10 @@
   <div><p>{{ event.category }}</p></div>
   <div><p>Created by: {{ event.owner.username }}</p></div>
   
+  <div><a href="../invite/{{ event.id }}/">Invite</a></div>
   <div>
-    <a href="../invite/{{ event.id }}/">Invite</a>
+    <a href="mailto:?subject={{ share_subject }}&body={{ share_body }}">
+      Share</a>
   </div>
   {% if is_own %}
     <div><a href="../delete/{{ event.id }}/">Delete</a></div>

@@ -5,7 +5,7 @@ from django.shortcuts import render
 from eventdapp.models import AddFriendRequest
 from eventdapp.models import Attendence, Event, UserProfile
 from eventdapp.forms import CustomUserCreationForm, EventForm
-from eventdapp.utils import is_mobile
+from eventdapp.utils import is_valid_latlng, content_type_from, ext_from
 
 def register(request):
   if request.method == 'POST':
@@ -16,11 +16,11 @@ def register(request):
   else:
     form = CustomUserCreationForm()
 
-  template = "eventdapp/register.xml" if is_mobile(request) \
-               else "eventdapp/register.html"
+  template = "eventdapp/register.%s" % ext_from(request)
+
   return render(request, template, {
     'form': form,
-  })
+  }, content_type=content_type_from(request))
 
 def view_event(request, event_id):
   event = Event.objects.get(pk=event_id)
@@ -33,13 +33,19 @@ def view_event(request, event_id):
                           attendence[0].participation if attendence.exists() else None)
   template_vars = {
     'event': event,
-    'attendence_choices':attendence_choices,
-    'is_own':(request.user.id == owner_id),
+    'attendence_choices': attendence_choices,
+    'is_own': (request.user.id == owner_id),
+    'share_subject': 'Check out this event!',
+    'share_body': "Check out the event at" + '%0D%0A%0D%0A' + \
+                  request.build_absolute_uri(),
     }
   if attendence.exists():
     template_vars['status'] = attendence[0].get_participation_display()
 
-  return render(request, 'eventdapp/event.html', template_vars)
+  template = 'eventdapp/event.%s' % ext_from(request)
+
+  return render(request, template, template_vars, \
+                content_type=content_type_from(request))
 
 def create_event(request):
   return display_event_form(request, redirect="/")
@@ -116,7 +122,9 @@ def view_user(request, user_id):
 
   allAddFriendRequests = AddFriendRequest.objects.filter(requestee=user)
 
-  return render(request, 'eventdapp/user.html', {
+  template = 'eventdapp/user.%s' % ext_from(request)
+
+  return render(request, template, {
     'username': username,
     'events': events,
     "user_id": user_id,
@@ -124,7 +132,7 @@ def view_user(request, user_id):
     'is_friend': is_friend,
     'has_added': has_added,
     'allAddFriendRequests': allAddFriendRequests,
-  })  
+  }, content_type=content_type_from(request))  
 
 def add_friend(request, user_id):
   user = User.objects.get(pk=user_id)
@@ -200,17 +208,19 @@ def attend_event(request, event_id, is_going):
     
   return HttpResponseRedirect(("../../../{}").format(event.id))
 
-def search_event(request):  
+def search_event(request, content_type='text/html'):  
   events = Event.objects.none()
   avg_lat, avg_lng = 38.0, -97.0
   zoom = 3
+  template = 'eventdapp/search_result_event.html' \
+             if content_type == 'text/html' \
+             else 'eventdapp/search_result_event.xml'
 
-  if request.method == "POST":
-    what = request.POST.get("what")
-    lng = request.POST.get("lng")
-    lat = request.POST.get("lat")
+  what = request.GET.get("what")
+  lng = request.GET.get("lng")
+  lat = request.GET.get("lat")
     
-      # where != None --> filter out locations
+  if is_valid_latlng(lat, lng):
     lng = float(lng)
     lat = float(lat)
     tempRawEvent = Event.objects.raw("""
@@ -228,20 +238,21 @@ LIMIT 20;
 """,[lat,lng,lat])
     for event in tempRawEvent:
       events = events | Event.objects.filter(pk=event.id)
-    what_tokens = what.split()
+    if what != None:
+      what_tokens = what.split()
 
-    # filter "what" from event title
-    tempEvent1 = events
-    for token in what_tokens:
-      tempEvent1 = tempEvent1.filter(title__icontains=token)
+      # filter "what" from event title
+      tempEvent1 = events
+      for token in what_tokens:
+        tempEvent1 = tempEvent1.filter(title__icontains=token)
 
-    # filter "what" from event description
-    tempEvent2 = events
-    for token in what_tokens:
-      tempEvent2 = tempEvent2.filter(description__icontains=token)
+      # filter "what" from event description
+      tempEvent2 = events
+      for token in what_tokens:
+        tempEvent2 = tempEvent2.filter(description__icontains=token)
 
-    # all candidate events
-    events = tempEvent1 | tempEvent2  
+      # all candidate events
+      events = tempEvent1 | tempEvent2  
 
     if events:
       num_events = float(events.count())
@@ -249,10 +260,10 @@ LIMIT 20;
       avg_lat = sum(event.place_latitude for event in events) / num_events
       zoom = 12
  
-  return render(request, 'eventdapp/search_result_event.html',{
+  return render(request, template,{
     'events': events,
     'avg_lng': avg_lng,
     'avg_lat': avg_lat,
     'zoom': zoom,
-  })
+  }, content_type=content_type)
 
