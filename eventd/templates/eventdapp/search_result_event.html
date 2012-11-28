@@ -16,11 +16,11 @@
       {% for event in events %}
         var marker{{ forloop.counter0 }} =
               new google.maps.Marker({ map: map,
-                                       title: "{{ event.place_text }}",
+                                       title: "{{ event.title }}",
                position: new google.maps.LatLng( {{ event.place_latitude }},
                                            {{ event.place_longitude }}) });
         var infowindow{{ forloop.counter0 }} = new google.maps.InfoWindow({
-                                  content: "{{ event.place_text }}" });
+               content: "<a href=\"/event/{{ event.id }}/\" target=\"_blank\">{{ event.title }}</a><br /><br />{{ event.place_text }}" });
         
         google.maps.event.addListener(marker{{ forloop.counter0}}, 'click',
                     function() {
