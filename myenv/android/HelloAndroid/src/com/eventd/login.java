@@ -49,7 +49,8 @@ public class login extends Activity{
 	private TextView userTextView = null;
 	private TextView psswdTextView = null;
 	private String cookieString = null;
-    public static DefaultHttpClient client = new DefaultHttpClient();  
+    //public static DefaultHttpClient client = new DefaultHttpClient();  
+	
     
 	//public static CookieManager cookieManager = null;
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +69,15 @@ public class login extends Activity{
 	 class MyButtonListener implements OnClickListener{
 	        
 	    	public void onClick (View v) {
-
-	    	client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "MobileEventd");
+	    		
+	    	Client client = new Client();
+	    	client.client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "MobileEventd");
 
 	    	
             try {  
                 String getURL = "http://hidden-brushlands-4742.herokuapp.com/login/";
                 HttpGet get = new HttpGet(getURL);
-                HttpResponse responseGet = client.execute(get);  
+                HttpResponse responseGet = client.client.execute(get);  
                 HttpEntity resEntityGet = responseGet.getEntity();  
                 if (resEntityGet != null) {  
                             //do something with the response
@@ -97,12 +99,12 @@ public class login extends Activity{
 	            Log.i("test",params.toString());
 	            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params);
 	            post.setEntity(ent);
-	            HttpResponse responsePOST = client.execute(post);  
+	            HttpResponse responsePOST = client.client.execute(post);  
 	            HttpEntity resEntity = responsePOST.getEntity();  
 	            if (resEntity != null) {    
 	                Log.i("RESPONSE",EntityUtils.toString(resEntity));
 	            }
-	            List<Cookie> cookies = client.getCookieStore().getCookies();
+	            List<Cookie> cookies = client.client.getCookieStore().getCookies();
 	            if(cookies != null)
 	            {
 	                for(Cookie cookie : cookies)
@@ -114,10 +116,7 @@ public class login extends Activity{
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
-	        //intent.setClass(login.this, EventdAndroid.class);
-	        //intent = new Intent(getApplicationContext(), EventdAndroid.class);
-	        //intent.putExtra("cookieManager", cookieString);
-	        //login.this.startActivity(intent);
+
             Intent intent=new Intent(login.this,EventdAndroid.class);
             Bundle bundle = new Bundle();   
             bundle.putString( "cookieString",cookieString);        

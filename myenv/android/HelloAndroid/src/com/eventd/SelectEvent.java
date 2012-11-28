@@ -42,43 +42,20 @@ public class SelectEvent extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.selectevent);
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            cookieString = extras.getString("cookieString");
-            Log.i("cookies", cookieString);
-        }
-        else
-        {
-        	Intent intent = new Intent();
-        	intent.setClass(SelectEvent.this, login.class);
-        	SelectEvent.this.startActivity(intent);
-        }
+
         ListView listView = (ListView) findViewById(R.id.eventlist);
       
         //Http client and parse the cookie.
-        DefaultHttpClient client = new DefaultHttpClient();
-        client = login.client;
-        client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "MobileEventd");
-        /*String[] keyValueSets = cookieString.split(";");
-        for(String cookie : keyValueSets)
-        {
-            String[] keyValue = cookie.split("=");
-            String key = keyValue[0];
-            String value = "";
-            if(keyValue.length>1) value = keyValue[1];
-            Log.i("key", key);
-            Log.i("value", value);
-            //BasicClientCookie c = new BasicClientCookie(key, value);
-            c = new BasicClientCookie(key, value);
-            //c.setDomain("http://hidden-brushlands-4742.herokuapp.com");
-            client.getCookieStore().addCookie(c);
-            localContext.setAttribute(ClientContext.COOKIE_STORE, client.getCookieStore());
-        }*/
+        //DefaultHttpClient client = new DefaultHttpClient();
+        Client client = new Client();
+        //client = login.client;
+        client.client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "MobileEventd");
+
         
         try {  
             String getURL = "http://hidden-brushlands-4742.herokuapp.com";
             HttpGet get = new HttpGet(getURL);
-            HttpResponse responseGet = client.execute(get);  
+            HttpResponse responseGet = client.client.execute(get);  
             HttpEntity resEntityGet = responseGet.getEntity();  
             if (resEntityGet != null) {  
                 //do something with the response

@@ -1,9 +1,5 @@
 package com.eventd;
 
-
-
-
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +17,7 @@ public class EventdAndroid extends Activity {
 	private Button home_btn_schedule=null;
 	private Button home_btn_sessions=null;
 	private Button home_btn_vendors=null;
+	private Button monocole = null;
 	private String cookieString = null;
 	
 	
@@ -32,35 +29,36 @@ public class EventdAndroid extends Activity {
         home_btn_schedule= (Button)findViewById(R.id.home_btn_schedule);
         home_btn_vendors= (Button)findViewById(R.id.home_btn_vendors);
         home_btn_sessions= (Button)findViewById(R.id.home_btn_sessions);
+        monocole = (Button)findViewById(R.id.home_btn_map);
         
         button1.setOnClickListener(new MyButtonListener());
         home_btn_notes.setOnClickListener(new AnotherButtonListener());
         home_btn_schedule.setOnClickListener(new AnotherButtonListener2());
         home_btn_vendors.setOnClickListener(new AnotherButtonListener3());
         home_btn_sessions.setOnClickListener(new AnotherButtonListener4());
-        
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            cookieString = extras.getString("cookieString");
-            Log.i("cookies", cookieString);
-        }
-        else
-        {
-        	Intent intent = new Intent();
-        	intent.setClass(EventdAndroid.this, login.class);
-        	EventdAndroid.this.startActivity(intent);
-        }
-        
-        
+        monocole.setOnClickListener(new monocoleListener());
+       
         
     }
     
     /** Handle "schedule" action. */
-//    public void onScheduleClick(View v) {
-        // Launch overall conference schedule
-//        startActivity(new Intent(this, HelloSchedule.class));
-//    }
     
+    class monocoleListener implements OnClickListener{
+        
+    	public void onClick (View v) {
+
+    	Intent intent = new Intent();
+
+
+    	intent.setClass(EventdAndroid.this, Augmentation.class);
+
+    	EventdAndroid.this.startActivity(intent);
+
+    	}
+    }   
+
+    
+
     public void onMapClick(View v) {
    	//startActivity(new Intent(this, com.eventd.augment.activity.Demo.class));
    }
@@ -126,9 +124,9 @@ public class EventdAndroid extends Activity {
         	public void onClick (View v) {
         	
             Intent intent=new Intent(EventdAndroid.this,SelectEvent.class);
-            Bundle bundle = new Bundle();   
-            bundle.putString( "cookieString",cookieString);        
-            intent.putExtras(bundle);   
+            //Bundle bundle = new Bundle();   
+            //bundle.putString( "cookieString",cookieString);        
+            //intent.putExtras(bundle);   
             startActivity(intent); 
 
 
