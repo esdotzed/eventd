@@ -1,0 +1,10 @@
+#register_form{
+  display:-webkit-box;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+  -webkit-box-orient:vertical;
+	-webkit-box-pack: center;		
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#ECECEC), to(#BDBDBD));
+}   

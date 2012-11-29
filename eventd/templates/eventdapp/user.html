@@ -2,12 +2,95 @@
 
 {% block title %}Homepage{% endblock %}
 
+{% block script %}
+<link rel="stylesheet" href="/static/stylesheets/header_all.css">
+<link rel="stylesheet" href="/static/stylesheets/user.css">
+{% endblock %}
+
+{% block header %}
+    <div id="header_right_wrapper">
+  <a href="/event/create/">
+  <img id="create_event" src="/static/images/create_event.png">
+  </a>
+  <a href="" >
+    <img id="friend_request" src="/static/images/friend_request.png"s>
+  </a>  
+  <a href="">
+    <img id="event_request" src="/static/images/event_request.png"s>
+  </a> 
+  <a href="/logout/">Log out</a>
+    </div>
+{% endblock %}
+
 {% block content %}
+      <profile id="main_profile">
+        <div id="profile_left">
+          <div id="profile_right_top">
+            <h1>YuJie Tao</h1>
+            <h2>({{ username }})</h2>
+            {% if not is_self and not is_friend and not has_added %}
+            <div id="addFriend_box"><a href="/user/add/{{ user_id }}/">+1 Add Friend</a></div>
+            {% endif %}
+          </div>
+          <div id="profile_right_bottom">
+            <div id="about_box">
+              <div id="about_box_inside">
+                <li>Worked at SM Club</li>
+                <li>Studied Computer Science at Cornell University</li>
+                <li>Lives in box</li>
+                <li>From Tebt, China</li>
+              </div>
+              <p>About</p>
+            </div>
+            <div id="friend_box">
+              <div id="friend_box_inside">
+                <img class="little_pic" src="/static/images\profile.png"></img>
+                <img class="little_pic" src="/static/images\profile.png"></img>
+                <img class="little_pic" src="/static/images\profile.png"></img>
+                <img class="little_pic" src="/static/images\profile.png"></img>
+                <img class="little_pic" src="/static/images\profile.png"></img>
+                <img class="little_pic" src="/static/images\profile.png"></img>
+              </div>
+              <p>Friends</p>
+            </div>
+          </div>
+        </div>
+        <img id="profile_right"src="/static/images\profile1.png"></img>
+      </profile>
+      <div id="event_section">
+        <div id="title">Upcoming Events</div>
+        <div id="wrapper2">
+        <section id="main_section">
+          <event>
+            <div class="date_box">
+              <p>Today</p> 
+            </div>
+            
+            {% for event in events %}
+            <article>
+              <div>{{ event.start_time }}</div>
+              <img src="/static/images\event.png"></img>
+              <div><a href="/event/{{ event.id }}/">{{ event.title }}</a></div>
+              <div>{{ event.place_text }}</div>    
+            </article>
+            {% endfor %}
+
+            <article>
+              <div>3:00 pm</div>
+              <img src="/static/images\event.png"></img>
+              <div>Sleep with mom</div>
+              <div>wanyuan</div>    
+            </article>
+          </event>
+        </section>
+        <div id="side_bar">
+          <aside id="side_calendar">
+            <img src="/static/images\calendar.png"></img>
+          </aside>
+        </div>
+      </div>
+
   {% if is_self %}
-    <div><a href="/logout/">Log out</a></div>
-    <br />
-    <div><a href="/event/create/">Create Event</a></div>
-    <br />
     <div> 
       <ul>
       {% for request in allAddFriendRequests %}
@@ -21,35 +104,5 @@
     </div>
     <br />
   {% endif %}
-  {{ username }}'s homepage~
-  
-  {% if not is_self and not is_friend and not has_added %}
-    <div>
-      <a href="/user/add/{{ user_id }}/">add friend</a>
-    </div>
-  {% endif %}
-  <div>
-    Events:
-    <ul>
-    {% for event in events %}
-      <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
-    {% endfor %}
-    </ul>
-  </div>
-<!--   <div>
-    Have chosen events:
-    <ul>
-    {% for event in have_chosen_events %}
-      <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
-    {% endfor %}
-    </ul>
-  </div>
-  <div>
-    Invited events:
-    <ul>
-    {% for event in invited_events %}
-      <li><a href="/event/{{ event.id }}/">{{ event.title }}</a></li>
-    {% endfor %}
-    </ul>
-  </div> -->
+
 {% endblock %}

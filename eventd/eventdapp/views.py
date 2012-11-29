@@ -210,6 +210,8 @@ def attend_event(request, event_id, is_going):
 
 def search_event(request, content_type='text/html'):  
   events = Event.objects.none()
+  top_events = []
+  other_events = []
   avg_lat, avg_lng = 38.0, -97.0
   zoom = 3
   template = 'eventdapp/search_result_event.html' \
@@ -252,16 +254,23 @@ LIMIT 20;
         tempEvent2 = tempEvent2.filter(description__icontains=token)
 
       # all candidate events
-      events = tempEvent1 | tempEvent2  
+      events = tempEvent1 | tempEvent2 
 
     if events:
       num_events = float(events.count())
       avg_lng = sum(event.place_longitude for event in events) / num_events
       avg_lat = sum(event.place_latitude for event in events) / num_events
       zoom = 12
+      
+      for i, e in enumerate(events):
+        if i < 2:
+            top_events.append(e)
+        else:
+            other_events.append(e)
  
   return render(request, template,{
-    'events': events,
+    'top_events': top_events,
+    'events': other_events,
     'avg_lng': avg_lng,
     'avg_lat': avg_lat,
     'zoom': zoom,

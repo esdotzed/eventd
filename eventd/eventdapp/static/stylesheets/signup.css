@@ -1,0 +1,76 @@
+a{
+  text-decoration: none;
+}
+#event_list{
+  -webkit-box-pack: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-flex:1;
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#9CC746), to(#779635));
+  border-radius: 10px;
+}
+#hide{
+  height: 20px;
+}
+.event_detail{
+  display:-webkit-box;
+  background: white;
+  height: 80px;
+  width: 340px;
+  margin: 20px;
+  border-radius: 10px;
+ 
+  
+}
+#map_center{
+  width: 400px;
+  height: 400px;
+  margin-top: 38px;
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#FF9A2E), to(#DA7623));
+  display:-webkit-box;
+  -webkit-box-pack: center;
+  border-radius: 10px;
+}
+#map_content{
+  margin-top: 20px; 
+  width: 360px;
+  height: 360px;
+}
+#signup_panel{
+  width: 180px;
+  height: 220px;
+  display:-webkit-box;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+  -webkit-box-orient:vertical;
+	-webkit-box-pack: center;		
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#ECECEC), to(#BDBDBD));
+}
+#signup_panel h1{
+  font: bold 18px Tahoma;
+  padding-bottom: 6px;
+  margin-bottom: 2px;
+  border-bottom: 2px solid #65AF23;
+}
+#signup_panel input{
+  display:-webkit-box;
+}
+.label{
+  display:-webkit-box;
+  font: 14px Century Gothic;
+}
+#register{  
+  text-align: center;
+  display:-webkit-box;
+  width: 64px;	
+  height: 24px;
+  padding-left: 4px;
+  margin-left: 50px;
+  cursor: pointer;    
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#9CC746), to(#779635));
+  border-radius: 6px; 
+  font: bold 12px Tahoma;
+  color: white;
+  
+}

@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <events>
+  {% for event in top_events %}
+  <event>
+      <id>{{ event.id }}</id>
+      <title>{{ event.title }}</title>
+      <desc>{{ event.description }}</desc>
+      <lat>{{ event.place_latitude }}</lat>
+      <lng>{{ event.place_longitude }}</lng>
+      <txt>{{ event.place_text }}</txt>
+      <stime>{{ event.start_time|date:"r" }}</stime>
+      <etime>{{ event.end_time|date:"r" }}</etime>
+      <categ>{{ event.category }}</categ>
+      <owner>{{ event.owner.username }}</owner>
+  </event>
+  {% endfor %}
   {% for event in events %}
   <event>
-    <id>{{ event.id }}</id>
-    <title>{{ event.title }}</title>
-    <lat>{{ event.place_latitude }}</lat>
-    <lng>{{ event.place_longitude }}</lng>
-    <txt>{{ event.place_text }}</txt>
+      <id>{{ event.id }}</id>
+      <title>{{ event.title }}</title>
+      <desc>{{ event.description }}</desc>
+      <lat>{{ event.place_latitude }}</lat>
+      <lng>{{ event.place_longitude }}</lng>
+      <txt>{{ event.place_text }}</txt>
+      <stime>{{ event.start_time|date:"r" }}</stime>
+      <etime>{{ event.end_time|date:"r" }}</etime>
+      <categ>{{ event.category }}</categ>
+      <owner>{{ event.owner.username }}</owner>
   </event>
   {% endfor %}
 </events>
