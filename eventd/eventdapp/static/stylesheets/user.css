@@ -1,0 +1,140 @@
+#main_profile{
+  /* border: 2px solid orange; */
+  border-bottom: 2px solid #C1D1BD;
+  background: white;
+  color: black;
+  display:-webkit-box;
+	-webkit-box-orient: horizontal; 
+  padding-bottom: 20px;
+  margin: 10px;
+}
+#profile_right{
+  width: 200px;
+  height: 200px;
+  padding: 5px;
+  border: 1px solid #b2b2b2;
+}
+#profile_left{
+  /* border: 1px solid yellow; */
+  display:-webkit-box;
+	-webkit-box-orient: vertical; 
+  padding-left: 20px;
+}
+profile h1{
+  font: bold 30px Century Gothic;
+}
+profile h2{
+  font: 30px Century Gothic;
+  color: grey;
+}
+#profile_right_top{
+  display:-webkit-box;
+	-webkit-box-orient: horizontal; 
+  padding: 10px;
+  -webkit-box-flex: 1;
+  padding-top: 20px;
+}
+#profile_right_bottom{
+  display:-webkit-box;
+	-webkit-box-orient: horizontal; 
+}
+#addFriend_box{
+  display: block;
+  font: bold 16px Century Gothic;
+  color: white;
+  width: 140px;
+  height: 16px;
+  padding: 10px;
+  margin-left: 55px;
+  text-align: center;
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#9CC746), to(#779635));
+  -webkit-border-radius: 10px;
+  -webkit-box-shadow: rgb(110,110,110) 4px 4px 4px;
+}
+#about_box_inside{
+  background: #F9FCF5;
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#FF9A2E), to(#DA7623));
+  height: 90px;
+}
+#about_box_inside li{
+  font: bold 14px Tahoma;
+  color: white;
+  padding: 2px;
+}
+#friend_box{
+  margin-left: 20px;
+}
+#friend_box_inside{
+  width: 135px;
+  height: 90px;
+  -webkit-box-shadow: rgb(110,110,110) 3px 3px 3px;
+  /* border: 2px solid green;   */
+}
+.little_pic{
+  display: block;
+  float: left;
+  height: 45px;
+  width: 45px;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+}
+#title{
+  font: bold 20px Century Gothic;
+  padding-bottom: 10px;
+  padding-left: 10px;
+}
+#wrapper2{
+  border-bottom: 2px solid #C1D1BD;
+  margin-left:10px;
+  margin-right:10px;
+  padding-bottom: 10px;
+	display:-webkit-box;
+	-webkit-box-orient: horizontal;  
+}
+#main_section{
+  /* border: 2px solid orange; */
+  display:-webkit-box;
+	-webkit-box-orient: vertical;  
+	-webkit-box-flex: 1;  
+}
+.date_box{
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#FFFFFF), to(#BDBDBD));
+  height: 26px;
+  margin-bottom: 8px;
+}
+.date_box>p{
+  font: bold 12px Tahoma;
+  margin:0;
+  padding-top:7px;
+  padding-bottom:7px;
+}
+event{
+  margin-bottom: 10px;
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#9CC746), to(#779635));
+}
+article{
+  display:-webkit-box;
+  -webkit-box-orient: horizontal;
+}
+article>img{
+  width: 80px;
+  height: 80px;
+  padding: 3px;
+  margin: 0;
+}
+article>div{
+  padding: 3px;
+}
+#side_bar{
+  /* border: 2px solid blue; */
+  width: 300px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+aside img{
+  width: 300px;
+}
+#side_calendar{
+  padding-top: 10px;
+}

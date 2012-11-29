@@ -1,0 +1,150 @@
+#wrapper2{
+  padding-top: 20px;
+	margin:0px 0px;
+	display:-webkit-box;
+	-webkit-box-orient: vertical;  
+}
+#event_intro{
+  /* border: 2px solid orange; */
+  border-bottom: 2px solid #C1D1BD;
+  background: white;
+  color: black;
+  display:-webkit-box;
+	-webkit-box-orient: horizontal; 
+  padding-bottom: 20px;
+  margin: 10px;
+}
+#event_intro_left{
+  width: 200px;
+  height: 200px;
+  padding: 5px;
+  border: 1px solid #b2b2b2;
+}
+#event_intro_right{
+  /* border: 1px solid yellow; */
+  display:-webkit-box;
+	-webkit-box-orient: vertical; 
+  padding-left: 20px;
+}
+#event_intro_right_top{
+  display:-webkit-box;
+	-webkit-box-orient: horizontal; 
+  -webkit-box-flex: 1;
+  padding-top: 2px;
+  /* border: 2px solid blue; */
+}
+#event_intro_right_top h1{
+  font: bold 30px Century Gothic;
+}
+#choice{
+  display:-webkit-box;
+  -webkit-box-orient: horizontal; 
+  /* border: 2px solid red; */
+  margin-left: 140px;
+  margin-top: 4px;
+}
+#choice>h1{
+  font: bold 22px Century Gothic;
+  color: #C1D1BD;
+}
+.attendence_box{
+  display: block;
+  font: bold 14px Century Gothic;
+  color: white;
+  width: 62px;
+  height: 22px;
+  margin-right: 10px;
+  /* margin-left: 55px; */
+  text-align: center;
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#9CC746), to(#779635));
+  -webkit-border-radius: 10px;
+  -webkit-box-shadow: rgb(110,110,110) 2px 2px 2.5px;
+}
+#share_box{
+  display: block;
+  font: bold 14px Century Gothic;
+  color: white;
+  width: 62px;
+  height: 22px;
+  margin-left: 8px;
+  margin-right: 10px;
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#FF9A2E), to(#DA7623));
+  text-align: center;
+  -webkit-border-radius: 10px;
+  -webkit-box-shadow: rgb(110,110,110) 2px 2px 2.5px;
+}
+#event_intro_right_bottom{
+  display:-webkit-box;
+	-webkit-box-orient: horizontal; 
+  /* border: 2px solid black; */
+}
+td>p{
+  display: inline;
+  padding: 0px;
+  margin: 0px;
+  padding-right: 14px;
+}
+table{
+  width: 100%;
+/*   border: solid 1px black; */
+}
+tr:nth-child(odd){
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#FFFFFF), to(#BDBDBD));
+}
+.key{
+  font: bold 18px Century Gothic;
+  text-align: right;
+  padding-right:20px;
+  padding-bottom: 10px;
+}
+.value{
+  font: 16px Century Gothic;
+  padding-right:20px;
+  padding-bottom: 10px;
+}
+#main_section{
+  /* border: 2px solid orange; */
+  display:-webkit-box;
+	-webkit-box-orient: horizontal;  
+}
+#main_section_left{
+  display:-webkit-box;
+  -webkit-box-flex: 1; 
+  -webkit-box-orient: vertical;
+}
+#event_detail{
+  display:-webkit-box;
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#9CC746), to(#779635));
+}
+#wall{
+  background:-webkit-gradient(linear, 0 0, 0 bottom,from(#FFFFFF), to(#BDBDBD));
+  display:-webkit-box;
+  -webkit-box-flex: 1;
+  margin-top: 10px;
+}
+#side_bar{
+  width: 300px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+a{
+  text-decoration: none;
+}
+.attendance_single{
+  width: 40px;
+  height: 40px;
+  padding-left: 6px;
+  padding-right: 6px;
+  margin: 0px;
+}
+#event_detail{
+  display:-webkit-box;
+	-webkit-box-orient: vertical;  
+  margin-left: 10px;
+}
+#event_detail p{
+  margin-top: 10px;
+  font: 18px Tahoma;
+}
+
+
