@@ -37,6 +37,7 @@
   <a href="">
     <img id="event_request" src="/static/images/event_request.png"s>
   </a>  
+  <a href="/logout/">Log out</a>
 </div>
 {% endblock %}
 
@@ -58,13 +59,13 @@
                 {% endfor %}
                 {% endif %}
                 <h1>|</h1>
-                <div id="share_box"> <a href="mailto:?subject={{ share_subject }}&body={{ share_body }}">Share</a></div>
-                <div><a href="../invite/{{ event.id }}/">Invite</a></div>
+                <div class="share_box"> <a href="mailto:?subject={{ share_subject }}&body={{ share_body }}">Share</a></div>
+                <div class="share_box"><a href="../invite/{{ event.id }}/">Invite</a></div>
               </div>
               <div>
                 {% if is_own %}
-                <div><a href="../delete/{{ event.id }}/">Delete</a></div>
-                <div><a href="../edit/{{ event.id }}/">Edit</a></div>
+                <div class="share_box"><a href="../delete/{{ event.id }}/">Delete</a></div>
+                <div class="share_box"><a href="../edit/{{ event.id }}/">Edit</a></div>
                 <br />
                 {% endif %}
             </div>

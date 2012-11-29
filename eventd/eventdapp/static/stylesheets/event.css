@@ -60,19 +60,18 @@
   -webkit-border-radius: 10px;
   -webkit-box-shadow: rgb(110,110,110) 2px 2px 2.5px;
 }
-#share_box{
+.share_box{
   display: block;
   font: bold 14px Century Gothic;
   color: white;
-  width: 62px;
+  width: 56px;
   height: 22px;
-  margin-left: 8px;
-  margin-right: 10px;
   background:-webkit-gradient(linear, 0 0, 0 bottom,from(#FF9A2E), to(#DA7623));
   text-align: center;
   -webkit-border-radius: 10px;
   -webkit-box-shadow: rgb(110,110,110) 2px 2px 2.5px;
 }
+
 #event_intro_right_bottom{
   display:-webkit-box;
 	-webkit-box-orient: horizontal; 
@@ -115,12 +114,14 @@ tr:nth-child(odd){
 #event_detail{
   display:-webkit-box;
   background:-webkit-gradient(linear, 0 0, 0 bottom,from(#9CC746), to(#779635));
+  -webkit-box-flex: 1;
 }
 #wall{
   background:-webkit-gradient(linear, 0 0, 0 bottom,from(#FFFFFF), to(#BDBDBD));
   display:-webkit-box;
   -webkit-box-flex: 1;
   margin-top: 10px;
+  margin-left: 8px;
 }
 #side_bar{
   width: 300px;

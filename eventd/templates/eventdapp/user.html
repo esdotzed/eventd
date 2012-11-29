@@ -26,7 +26,7 @@
       <profile id="main_profile">
         <div id="profile_left">
           <div id="profile_right_top">
-            <h1>YuJie Tao</h1>
+            <h1>{{ username }}</h1>
             <h2>({{ username }})</h2>
             {% if not is_self and not is_friend and not has_added %}
             <div id="addFriend_box"><a href="/user/add/{{ user_id }}/">+1 Add Friend</a></div>
@@ -71,26 +71,11 @@
               <div>{{ event.start_time }}</div>
               <img src="/static/images\event.png"></img>
               <div><a href="/event/{{ event.id }}/">{{ event.title }}</a></div>
-              <div>{{ event.place_text }}</div>    
+              <div>{{ event.place_text }}</div>
             </article>
             {% endfor %}
-
-            <article>
-              <div>3:00 pm</div>
-              <img src="/static/images\event.png"></img>
-              <div>Sleep with mom</div>
-              <div>wanyuan</div>    
-            </article>
           </event>
-        </section>
-        <div id="side_bar">
-          <aside id="side_calendar">
-            <img src="/static/images\calendar.png"></img>
-          </aside>
-        </div>
-      </div>
-
-  {% if is_self %}
+          {% if is_self %}
     <div> 
       <ul>
       {% for request in allAddFriendRequests %}
@@ -104,5 +89,14 @@
     </div>
     <br />
   {% endif %}
+        </section>
+        <div id="side_bar">
+          <aside id="side_calendar">
+            <img src="/static/images\calendar.png"></img>
+          </aside>
+        </div>
+      </div>
+
+  
 
 {% endblock %}
