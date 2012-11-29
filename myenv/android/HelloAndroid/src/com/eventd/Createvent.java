@@ -80,6 +80,8 @@ public class Createvent extends Activity{
 		            params.add(new BasicNameValuePair("end_time", todate.getText().toString()+" "+totime.getText().toString()));	
 		            params.add(new BasicNameValuePair("place_text", location.getText().toString()));
 		            params.add(new BasicNameValuePair("category", cat));
+		            params.add(new BasicNameValuePair("place_longitude", "-76.484159"));
+		            params.add(new BasicNameValuePair("place_latitude", "42.4449355"));
 		            Log.i("test",params.toString());
 		            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params);
 		            post.setEntity(ent);
@@ -91,13 +93,6 @@ public class Createvent extends Activity{
 		        }catch(Exception e) {
 		            e.printStackTrace();
 		        }
-	    		
-	    		
-	    		
-	    		
-	    		
-	    		
-	    		
 	    		
 	    		Intent intent = new Intent();    	
 	    		intent.setClass(Createvent.this, EventdAndroid.class);

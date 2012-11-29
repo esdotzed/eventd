@@ -19,6 +19,7 @@ public class EventdAndroid extends Activity {
 	private Button home_btn_vendors=null;
 	private Button monocole = null;
 	private String cookieString = null;
+	private Button search = null;
 	
 	
     public void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class EventdAndroid extends Activity {
         home_btn_vendors= (Button)findViewById(R.id.home_btn_vendors);
         home_btn_sessions= (Button)findViewById(R.id.home_btn_sessions);
         monocole = (Button)findViewById(R.id.home_btn_map);
+        search = (Button)findViewById(R.id.home_btn_starred);
         
         button1.setOnClickListener(new MyButtonListener());
         home_btn_notes.setOnClickListener(new AnotherButtonListener());
@@ -37,116 +39,100 @@ public class EventdAndroid extends Activity {
         home_btn_vendors.setOnClickListener(new AnotherButtonListener3());
         home_btn_sessions.setOnClickListener(new AnotherButtonListener4());
         monocole.setOnClickListener(new monocoleListener());
-       
+        search.setOnClickListener(new searchlistener());
         
     }
     
     /** Handle "schedule" action. */
     
-    class monocoleListener implements OnClickListener{
+    	class monocoleListener implements OnClickListener{
         
-    	public void onClick (View v) {
+    		public void onClick (View v) {
+    			Intent intent = new Intent();
+    			intent.setClass(EventdAndroid.this, Augmentation.class);
+    			EventdAndroid.this.startActivity(intent);
+    		}
+    	}   
 
-    	Intent intent = new Intent();
+    
 
-
-    	intent.setClass(EventdAndroid.this, Augmentation.class);
-
-    	EventdAndroid.this.startActivity(intent);
-
+    	public void onMapClick(View v) {
+    		//startActivity(new Intent(this, com.eventd.augment.activity.Demo.class));
     	}
-    }   
-
     
-
-    public void onMapClick(View v) {
-   	//startActivity(new Intent(this, com.eventd.augment.activity.Demo.class));
-   }
-    
-    public void onStarredClick(View v) {
-    	//startActivity(new Intent(this, com.eventd.feedback.sendMySQL.class));
-    }
+    	public void onStarredClick(View v) {
+    		//startActivity(new Intent(this, com.eventd.feedback.sendMySQL.class));
+    	}
     
 
     
-    public void onSearchClick(View v) {
-    	Toast.makeText(this, "Search to be implemented :-)", Toast.LENGTH_LONG).show();
-    }
+    	public void onSearchClick(View v) {
+    		Toast.makeText(this, "Search to be implemented :-)", Toast.LENGTH_LONG).show();
+    	}
     
-    public void onRefreshClick(View v) {
-    	Toast.makeText(this, "Refresh to be implemented :-)", Toast.LENGTH_LONG).show();
-    }
+    	public void onRefreshClick(View v) {
+    		Toast.makeText(this, "Refresh to be implemented :-)", Toast.LENGTH_LONG).show();
+    	}
   
-    class MyButtonListener implements OnClickListener{
+    	class MyButtonListener implements OnClickListener{
         
-    	public void onClick (View v) {
-
-    	Intent intent = new Intent();
-
-
-    	intent.setClass(EventdAndroid.this, login.class);
-
-    	EventdAndroid.this.startActivity(intent);
-
-    	}
-    }  	    
+    		public void onClick (View v) {
+    			Intent intent = new Intent();
+    			intent.setClass(EventdAndroid.this, login.class);
+    			EventdAndroid.this.startActivity(intent);
+    		}
+    	}  	    
     	class AnotherButtonListener implements OnClickListener{
     	    
-    	public void onClick (View v) {
-    	Intent intent1 = new Intent();
-
-    	intent1.setClass(EventdAndroid.this, Createvent.class);
-
-    	EventdAndroid.this.startActivity(intent1);
-
-
-    	    }
-
-    	    }
+    		public void onClick (View v) {
+    			Intent intent1 = new Intent();
+    			intent1.setClass(EventdAndroid.this, Createvent.class);
+    			EventdAndroid.this.startActivity(intent1);
+    		}
+    	}
 
      	class AnotherButtonListener2 implements OnClickListener{
     	    
         	public void onClick (View v) {
-        	Intent intent1 = new Intent();
+        		Intent intent1 = new Intent();
+        		intent1.setClass(EventdAndroid.this, Map.class);
+        		EventdAndroid.this.startActivity(intent1);
+        	}
 
-        	intent1.setClass(EventdAndroid.this, SearchMap.class);
-
-        	EventdAndroid.this.startActivity(intent1);
-
-
-        	    }
-
-        	    }
+        }
         	    
      	
         class AnotherButtonListener3 implements OnClickListener{
     	    
         	public void onClick (View v) {
         	
-            Intent intent=new Intent(EventdAndroid.this,SelectEvent.class);
-            //Bundle bundle = new Bundle();   
-            //bundle.putString( "cookieString",cookieString);        
-            //intent.putExtras(bundle);   
-            startActivity(intent); 
-
-
+        		Intent intent=new Intent(EventdAndroid.this,SelectEvent.class);
+        		//Bundle bundle = new Bundle();   
+        		//bundle.putString( "cookieString",cookieString);        
+        		//intent.putExtras(bundle);   
+        		startActivity(intent); 
         	    }
 
-        	    }
+        	}
         class AnotherButtonListener4 implements OnClickListener{
     	    
         	public void onClick (View v) {
-        	Intent intent1 = new Intent();
+        		Intent intent1 = new Intent();
+        		intent1.setClass(EventdAndroid.this, Profile.class);
+        		EventdAndroid.this.startActivity(intent1);
+        	}
 
-        	intent1.setClass(EventdAndroid.this, Profile.class);
-
-        	EventdAndroid.this.startActivity(intent1);
-
-
-        	    }
-
-        	    }
+        }
     
+     	class searchlistener implements OnClickListener{
+    	    
+        	public void onClick (View v) {
+        		Intent intent1 = new Intent();
+        		intent1.setClass(EventdAndroid.this, SearchMap.class);
+        		EventdAndroid.this.startActivity(intent1);
+        	}
+
+        }
 }
 
 
