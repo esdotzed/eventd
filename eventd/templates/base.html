@@ -1,7 +1,12 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
+  <meta charset="utf-8" />
   <title>{% block title %}{% endblock %}</title>
   {% block style %}{% endblock %}
+  <link rel="stylesheet" href="/static/stylesheets/main.css">
+  <link rel="stylesheet" href="/static/stylesheets/header_login.css">
+  <link rel="stylesheet" href="/static/stylesheets/signup.css">
   <script type="text/javascript"
     src="//maps.googleapis.com/maps/api/js?key=AIzaSyBJn4dI5sR-aB5YPbDie0exiEwVzo1dOrE&sensor=false">
   </script>
@@ -9,7 +14,7 @@
   </script>
   <script type="text/javascript">
     function validate() {
-      if ($("#where").val().length !== 0) {
+      if ($("#search_bar_where").val().length !== 0) {
         searchWithText();
       } else {
         searchWithUserLocation();
@@ -26,7 +31,7 @@
     function showPosition(position) {
       $("#lng").val(position.coords.longitude);
       $("#lat").val(position.coords.latitude);
-      $("#search_form").submit();     
+      $("#search_bar").submit();     
     }
 
     function handleError(positionError) {
@@ -37,13 +42,13 @@
     }
 
     function searchWithText() {
-      var address = $("#where").val();
+      var address = $("#search_bar_where").val();
       var geocoder = new google.maps.Geocoder();
       geocoder.geocode({address: address}, function(results, status) {
         var loc = results[0].geometry.location;
         $("#lng").val(loc.lng());
         $("#lat").val(loc.lat());
-        $("#search_form").submit();
+        $("#search_bar").submit();
       });
     }
   </script>
@@ -51,18 +56,31 @@
 </head>
 
 <body {% block body-attr %}{% endblock %}>
-<form id="search_form" method="GET"
-      action="/event/search/">
-  <label for="what">Search for:</label>
-  <input type="text" name="what" id="what" value="">
-  <label for="where">near:</label>
-  <input type="text" name="where" id="where" value="">
-
-  <input type="hidden" id="lng" name="lng" value="">
-  <input type="hidden" id="lat" name="lat" value="">
-  <input type="button" onclick="validate()" value="Submit">
-  <span id="loc_error"></span>
-</form>
-{% block content %}{% endblock %}
+  <div id="wrapper0">
+    <header id="header_wrap">
+      <header id="top_header">
+        <img id="eventlogo" src="/static/images/eventlogo.jpg"></img>
+        <form id="search_bar" action="/event/search/" method="GET" autocomplete="on" novalidate="novalidate">
+          <label for="search_bar_what">Search for:</label>
+          <input id="search_bar_what" name="what" required="required" type="text" value=""/>
+          <label for="search_bar_where">near:</label>
+          <input id="search_bar_where" name="where" required="required" type="text" value=""/>
+          <input type="hidden" id="lng" name="lng" value="">
+          <input type="hidden" id="lat" name="lat" value="">
+          <input id="search_bar_submit" type="button" onclick="validate()" value="Search">
+          <span id="loc_error"></span>
+        </form>
+        {% block header %}{% endblock %}
+     </header>
+      <div id="header_bottom"></div>
+    </header>
+    <div id="wrapper1">
+        {% block content %}{% endblock %}
+     <footer id="the_footer">
+      Copyright (C) Event'd 2011-2012, All Rights Reserved 
+      </footer>
+    </div>
+  </div>
 </body>
 </html>
+

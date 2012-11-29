@@ -5,6 +5,8 @@
 {% block style %}
   <link rel="stylesheet" media="all" type="text/css" href="http://code.jquery.com/ui/1.9.1/themes/smoothness/jquery-ui.css" />
   <link rel="stylesheet" type="text/css" href="/static/timepicker.css" />
+  <link rel="stylesheet" href="/static/stylesheets/create_event.css">
+  <link rel="stylesheet" href="/static/stylesheets/header_all.css">
 {% endblock %}
 
 {% block script %}
@@ -118,14 +120,69 @@
 {% endblock %}
 
 {% block content %}
-  <form id="event_form" enctype="multipart/form-data" action="" method="post">
-    {{ form.as_p }}
-    <input type="button" onclick="handleSubmit()" value="Submit">
-  </form>
+<form id="event_form" action="" method="post" enctype="multipart/form-data" autocomplete="on" novalidate="novalidate">	
+  <section class="section1">	
+		<div id="what">
+			<div class="title">
+				What
+			</div>
+			    {{ form.title }}
+			    {{ form.title.errors }}
+				{{ form.description}}
+				{{ form.description.errors }}
+			    {{ form.category }}
+			    {{ form.category.errors }}
+			    {{ form.photo }}
+			    {{ form.photo.errors }}
+		</div>
+		<div id="when">
+			<div class="title">
+				When
+			</div>
+            {{ form.start_time}}
+            {{ form.start_time.errors }}
+            {{ form.end_time}}
+            {{ form.end_time.errors }}
+		</div>
+	</section>
+	<section class="section1">
+		<div id="where">
+			<div class="title">
+				Where
+			</div>
+			{{ form.place_text }}
+			{{ form.place_text.errors }}
+			<div id="map_canvas"></div>
+		</div>
+		<div id="who">
+			<div class="title">
+				Who
+			</div>
+				<input id="friend" name="friend" required="required" type="text" placeholder="Search Friends"/>
+		</div>				
+	</section>
+	{{ form.place_latitude }}
+	{{ form.place_longitude }}
+			</form>
+	
+		<input id="submitbutton" type="button" onclick="handleSubmit()" value="Submit">
 
-  <div id="map_canvas" style="width:300px;height:300px"></div>
+ 
 {% endblock %}
 
+{% block header %}
+    <div id="header_right_wrapper">
+      <a href="/event/create/">
+        <img id="create_event" src="/static/images/create_event.png">
+      </a>
+      <a href="" >
+        <img id="friend_request" src="/static/images/friend_request.png"s>
+      </a>  
+      <a href="">
+        <img id="event_request" src="/static/images/event_request.png"s>
+      </a>  
+    </div>
+{% endblock %}
 {% block body-attr %}
   onload="initialize()"
 {% endblock %}

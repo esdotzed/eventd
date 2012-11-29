@@ -3,6 +3,8 @@
 {% block title %}Log-in{% endblock %}
 
 {% block script %}
+  <link rel="stylesheet" href="/static/stylesheets/header_login.css">
+  <link rel="stylesheet" href="/static/stylesheets/signup.css">
   <script type="text/javascript">
     var map;
     var markers = [];
@@ -21,6 +23,14 @@
       var lng = e.getElementsByTagName("lng")[0].firstChild.data;
       var txt = e.getElementsByTagName("txt")[0].firstChild.data;
       var title = e.getElementsByTagName("title")[0].firstChild.data;
+      var time = e.getElementsByTagName("stime")[0].firstChild.data;
+      
+      
+      $("<div class='event_detail'>"+
+        title+"<br/>" +
+        time+"<br/>" +
+        txt+
+        "</div>").appendTo('#event_list');
 
       var marker = new google.maps.Marker({ map: map,
                                     //   title: "{{ event.place_text }}",
@@ -65,7 +75,7 @@
       if (angle < 0) {
         angle += 360;
       }
-      var zoom = Math.round(Math.log(100.0 * 360 / angle / GLOBE_WIDTH) /
+      var zoom = Math.round(Math.log(360.0 * 360 / angle / GLOBE_WIDTH) /
                             Math.LN2);
       if (zoom === Infinity)
         zoom = 13;
@@ -87,7 +97,7 @@
       var mapOptions = { center: new google.maps.LatLng(38.0, -97.0),
                          zoom: 3,
                          mapTypeId: google.maps.MapTypeId.ROADMAP };
-      map = new google.maps.Map(document.getElementById("map_canvas"),
+      map = new google.maps.Map(document.getElementById("map_content"),
                                     mapOptions);
 
       for (var i = 0; i < doc.length; i++) {
@@ -105,20 +115,38 @@
   </script>
 {% endblock %}
 
+{% block header %}
+<form id="login_bar" action="" autocomplete="on" novalidate="novalidate" method="POST">
+ <label for="login_bar_username">Username:</label>
+ <input id="login_bar_username" name="username" value="" required="required" type="text"/>
+ <label for="login_bar_password">Password:</label>
+ <input id="login_bar_password" name="password" value="" required="required" type="password"/>
+ <input id="login_bar_sumbit"type="submit" value="Login" /> 
+ <input type="hidden" name="next" value="/" />
+</form>
+{% endblock %}
+
 {% block content %}
-  <form action="" method="post">
-    <label for="username">Username:</label>
-    <input type="text" name="username" value="" id="username" /><br />
-    <label for="password">Password:</label>
-    <input type="password" name="password" value="" id="password" /><br />
-
-    <input type="submit" value="Login" />
-    <input type="hidden" name="next" value="/" />
-    <a href="/register/">Register</a>
-  </form>
-
-  <br />
-  <div id="map_canvas" style="width:300px;height:300px"></div>
+<div id="wrapper2">
+  <div id="event_list">
+      <div id="hide"></div>
+    </div>
+  <div id="map_center">
+  <div id="map_content" style="width:360px;height:360px"></div>
+  </div>
+  <form id="signup_panel" action="" autocomplete="on" novalidate="novalidate">
+      <h1>Sign Up</h1> 	
+      <label class="label" for="username">User Name</label>
+      <input class="input" id="username" name="username" required="required" type="text"/>
+      <label class="label" for="emailsignup">Email</label>
+      <input class="input" id="emailsignup" name="emailsignup" required="required" type="email"/>        
+      <label class="label" for="password">Password</label>
+      <input class="input" id="password" name="password" required="required" type="password"/> 
+      <label class="label" for="password">Confirm Password</label>
+      <input class="input" id="password" name="password" required="required" type="password"/>               
+      <a id="register" href="/register/">Register</a>
+    </form>
+</div>
 {% endblock %}
 
 {% block body-attr %}

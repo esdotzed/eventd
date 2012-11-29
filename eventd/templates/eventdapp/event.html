@@ -3,6 +3,8 @@
 {% block title %}Event View{% endblock %}
 
 {% block script %}
+  <link rel="stylesheet" href="/static/stylesheets/header_all.css">
+  <link rel="stylesheet" href="/static/stylesheets/event.css">
   <script type="text/javascript">
     function initialize() {
       var locText = "<a href=\"/event/{{ event.id }}/\" target=\"_blank\">{{ event.title }}</a><br /><br />{{ event.place_text }}";
@@ -24,36 +26,135 @@
   </script>
 {% endblock %}
 
+{% block header %}
+<div id="header_right_wrapper">
+  <a href="/event/create/">
+    <img id="create_event" src="/static/images/create_event.png">
+  </a>
+  <a href="" >
+    <img id="friend_request" src="/static/images/friend_request.png"s>
+  </a>  
+  <a href="">
+    <img id="event_request" src="/static/images/event_request.png"s>
+  </a>  
+</div>
+{% endblock %}
+
 {% block content %}
-  <div><p>{{ event.title }}</p></div>
-  <div><p>{{ event.description }}</p></div>
-  <div><p>{{ event.place_text }}</p></div>
-  <div><p>{{ event.category }}</p></div>
-  <div><p>Created by: {{ event.owner.username }}</p></div>
-  
-  <div><a href="../invite/{{ event.id }}/">Invite</a></div>
-  <div>
-    <a href="mailto:?subject={{ share_subject }}&body={{ share_body }}">
-      Share</a>
-  </div>
-  {% if is_own %}
-    <div><a href="../delete/{{ event.id }}/">Delete</a></div>
-    <div><a href="../edit/{{ event.id }}/">Edit</a></div>
-    <br />
-  {% endif %}
-  
-  {% if not is_own %}
-    <div>{{status}}</div>
-    {% for choice in attendence_choices %}
-      <div>
-        <a href="../attend/{{ event.id }}/{{ choice.url}}">
-          {{ choice.disp }}</a>
-      </div>
-    {% endfor %}
-  {% endif %}
-  
-  <br />
-  <div id="map_canvas" style="width:300px;height:300px"></div>
+      <div id="wrapper2">
+        <div id="event_intro">
+          <img id="event_intro_left" src="/static/images\event.png"></img>
+          <div id="event_intro_right">
+            <div id="event_intro_right_top">
+              <h1>{{ event.title }}</h1>
+              <div id="choice">
+                {% if not is_own %}
+                <div class="attendence_box">{{status}}</div>
+                {% for choice in attendence_choices %}
+                <div class="attendence_box">
+                <a href="../attend/{{ event.id }}/{{ choice.url}}">
+                {{ choice.disp }}</a>
+                </div>
+                {% endfor %}
+                {% endif %}
+                <h1>|</h1>
+                <div id="share_box"> <a href="mailto:?subject={{ share_subject }}&body={{ share_body }}">Share</a></div>
+                <div><a href="../invite/{{ event.id }}/">Invite</a></div>
+              </div>
+              <div>
+                {% if is_own %}
+                <div><a href="../delete/{{ event.id }}/">Delete</a></div>
+                <div><a href="../edit/{{ event.id }}/">Edit</a></div>
+                <br />
+                {% endif %}
+            </div>
+            </div>
+            <div id="event_intro_right_bottom">  
+              <table>
+                <tr>
+                  <td class="key">Public Event</td>
+                  <td class="value">By {{ event.owner.username }}</td>
+                </tr>
+                <tr>
+                  <td class="key">Category</td>
+                  <td class="value">{{ event.category }}</td>
+                </tr>
+                <tr>
+                  <td class="key">Time</td>
+                  <td class="value"><p>Friday, November 29, 2012</p>
+                                    <p>6:30pm util 9:30pm in UTC +01</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="key">Where</td>
+                  <td class="value">{{ event.place_text }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="main_section">
+          <div id="main_section_left">
+            <div id="event_detail">
+              <h1>Event Detail</h1>
+              <p>
+                {{ event.description }}
+              </p>
+            </div>
+            <div id="wall">Wall</div>
+          </div>
+          <div id="side_bar">
+            <aside id="event_map"></aside>
+              <div id="map_canvas" style="width:300px;height:300px"></div>
+            </aside>
+            <aside class="attendance">
+              <a href=""><h1>Invited(99)</h1></a>
+              <div class="attendance_people">
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+                <img class="attendance_single" src="/static/images\dave.png"></img>
+              </div>
+            </aside>
+            <aside class="attendance">
+              <a href=""><h1>Going(21)</h1></a>
+              <div class="attendance_people">
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+                <img class="attendance_single" src="/static/images\girl.png"></img>
+              </div>
+            </aside>
+            <aside class="attendance">
+             <a href=""><h1>Maybe(32)</h1></a>
+              <div class="attendance_people">
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+                <img class="attendance_single" src="/static/images\attendance_pic.png"></img>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div> 
 {% endblock %}
 
 {% block body-attr %}
